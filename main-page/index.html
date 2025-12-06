@@ -52,11 +52,31 @@
         <p>热爱编程，正在构建我的虚拟世界。</p>
       </a>
 
-      <a href="/blog" class="card card-blog">
+      <!-- <a href="/blog" class="card card-blog">
         <div class="icon">📝</div>
         <div>
           <h3>我的博客</h3>
           <p>记录学习笔记、技术心得与生活随笔。</p>
+        </div>
+      </a> -->
+
+      <a href="javascript:void(0);" class="card card-blog card-scene"
+        onclick="this.querySelector('.card-flipper').classList.toggle('is-flipped')">
+        <div class="card-flipper">
+          <div class="card-face card-front">
+            <div>
+              <div class="icon">📝</div>
+              <h3>我的博客</h3>
+            </div>
+            <p>记录学习笔记、技术心得与生活随笔。</p>
+          </div>
+
+          <div class="card-blog card-face card-back">
+            <div class="icon">🚧</div>
+            <h3>施工中...</h3>
+            <p>工程师正在疯狂敲代码，<br>请稍后再来探索！</p>
+          </div>
+
         </div>
       </a>
 
