@@ -68,11 +68,23 @@
         </div>
       </a>
 
-      <a href="/game" class="card">
-        <div class="icon">🎮</div>
-        <div>
-          <h3>Game Demo</h3>
-          <p>试玩我开发游戏Demo演示。</p>
+      <a href="javascript:void(0);" class="card card-scene"
+        onclick="this.querySelector('.card-flipper').classList.toggle('is-flipped')">
+        <div class="card-flipper">
+          <div class="card-face card-front">
+            <div>
+              <div class="icon">🎮</div>
+              <h3>Game Demo</h3>
+            </div>
+            <p>试玩我开发游戏Demo演示。</p>
+          </div>
+
+          <div class="card-face card-back">
+            <div class="icon">🚧</div>
+            <h3>施工中...</h3>
+            <p>工程师正在疯狂敲代码，<br>请稍后再来探索！</p>
+          </div>
+
         </div>
       </a>
 

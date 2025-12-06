@@ -2,7 +2,7 @@
    1. 定义颜色变量 (核心)
    ========================================= */
 :root {
-  /* --- 默认：浅色模式 (Light Mode) --- */
+  /* --- 默认：浅色模式 --- */
   --bg-gradient: linear-gradient(to bottom, #e0f2fe, #f0f9ff);
   --text-main: #1e293b;
   --text-sub: #64748b;
@@ -20,7 +20,7 @@
   --change-color-speed: 0.3s
 }
 
-/* --- 深色模式 (Dark Mode) - 当 body 拥有 .dark-mode 类时生效 --- */
+/* --- 深色模式 - 当 body 拥有 .dark-mode 类时生效 --- */
 body.dark-mode {
   --bg-gradient: linear-gradient(to bottom, #0f172a, #1e293b);
   --text-main: #ffffff;
@@ -164,7 +164,6 @@ header p {
    5. 卡片样式
    ========================================= */
 
-/* --- 修改后的 .card 样式 --- */
 .card {
   background: var(--card-bg);
   /* 使用变量 */
@@ -252,7 +251,7 @@ header p {
 }
 
 /* =========================================
-   6. 切换按钮样式 (新增)
+   6. 切换按钮样式
    ========================================= */
 .theme-toggle {
   position: fixed;
@@ -286,7 +285,7 @@ header p {
 }
 
 /* =========================================
-   新增：卡片 3D 翻转特效 (优化版)
+   新增：卡片 3D 翻转特效
    ========================================= */
 
 /* 1. 场景容器 */
@@ -323,7 +322,6 @@ header p {
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border: 1px solid var(--card-border);
-  /* [修复1] 补上默认阴影，保持和普通卡片一致 */
   box-shadow: 0 4px 6px -1px var(--shadow-color);
 
   padding: 25px;
@@ -335,7 +333,6 @@ header p {
   transition: box-shadow 0.3s ease, background 0.3s ease;
 }
 
-/* [修复2] 当鼠标悬停在整个场景上时，加强内部 Face 的阴影 */
 .card-scene:hover .card-face {
   box-shadow: 0 15px 30px var(--shadow-color);
 }
@@ -361,7 +358,6 @@ header p {
   align-items: center;
   text-align: center;
   background: rgba(255, 247, 237, 0.95);
-  /* 稍微不透明一点，防止背面文字透出 */
 }
 
 /* 深色模式下背面的调整 */
@@ -388,8 +384,6 @@ body.dark-mode .card-back {
   background: transparent !important;
   box-shadow: none !important;
   background: var(--card-hover-bg);
-  /* [关键修改] 删掉了 transform: none; 
-       这样外壳依然会向上浮动 (-5px)，保持手感一致 */
 }
 
 .card-flipper {
