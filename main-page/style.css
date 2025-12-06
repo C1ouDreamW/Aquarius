@@ -28,6 +28,7 @@ body.dark-mode {
   --card-bg: rgba(30, 41, 59, 0.7);
   --card-border: rgba(255, 255, 255, 0.1);
   --card-hover-bg: rgba(37, 49, 71, 0.9);
+  --card-hover-bg-flip: rgba(147, 89, 58, 0.8);
   --cloud-opacity: 0.1;
   /* 深色背景下云朵要淡一点 */
   --btn-bg: rgba(30, 41, 59, 0.8);
@@ -388,4 +389,50 @@ body.dark-mode .card-back {
 
 .card-flipper {
   border-radius: 20px;
+}
+
+/* =========================================
+   页面切换动画 (Page Transitions)
+   ========================================= */
+
+/* 1. 定义入场动画关键帧：从下往上浮出，从透明变实 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+    /* 初始位置偏下 */
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 2. 定义离场动画关键帧：往下沉，变透明 */
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(30px);
+    /* 结束位置偏下 */
+  }
+}
+
+/* 3. 应用入场动画 */
+/* 给 .container 加上这个，页面一加载就会自动播放 */
+.container {
+  /* 0.8秒播完，使用 ease-out 让结尾很平滑，forwards 保持结束状态 */
+  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* 4. 离场样式 (这个类名会通过 JS 临时加上) */
+.page-exiting .container {
+  animation: fadeOutDown 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+  pointer-events: none;
+  /* 动画播放时不许乱点 */
 }

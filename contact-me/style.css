@@ -1,0 +1,163 @@
+/* =========================================
+   Contact Page 专用样式
+   ========================================= */
+
+/* 1. 顶部导航栏微调 */
+.page-header {
+  margin-bottom: 40px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-sub);
+  font-weight: 600;
+  margin-bottom: 15px;
+  transition: color 0.3s;
+}
+
+.back-btn svg {
+  margin-right: 5px;
+}
+
+.back-btn:hover {
+  color: var(--text-main);
+}
+
+
+/* 2. 联系页面布局：左2右1 */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  /* 左边占2份，右边占1份 */
+  gap: 20px;
+}
+
+/* 移动端适配：手机上变单列 */
+@media (max-width: 768px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* 3. 表单样式 */
+.form-card {
+  /* 继承了 .card 的所有玻璃特性 */
+  display: block;
+  /* 覆盖 grid 布局 */
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* 输入框美化 */
+input,
+textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  /* 默认无边框 */
+
+  /* 也是毛玻璃风格，但颜色稍微深一点/浅一点以区分 */
+  background: rgba(255, 255, 255, 0.4);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+/* 深色模式下输入框背景 */
+body.dark-mode input,
+body.dark-mode textarea {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* 输入框聚焦时的效果 */
+input:focus,
+textarea:focus {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: #3b82f6;
+  /* 聚焦变成蓝色边框 */
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+body.dark-mode input:focus,
+body.dark-mode textarea:focus {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+
+/* 4. 发送按钮 */
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  /* 品牌渐变色 */
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+
+/* 5. 右侧侧边栏的小卡片 */
+.contact-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px;
+}
+
+.info-card .icon {
+  font-size: 1.8rem;
+  margin-bottom: 0;
+  margin-right: 15px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+.info-card h4 {
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.info-card p {
+  font-size: 0.9rem;
+  margin: 0;
+}
