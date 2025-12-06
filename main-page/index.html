@@ -76,11 +76,23 @@
         </div>
       </a>
 
-      <a href="javascript:void(0);" class="card card-scene">
-        <div class="icon">🔧</div>
-        <div>
-          <h3>工具箱</h3>
-          <p>实用的小工具集合。</p>
+      <a href="javascript:void(0);" class="card card-scene"
+        onclick="this.querySelector('.card-flipper').classList.toggle('is-flipped')">
+        <div class="card-flipper">
+          <div class="card-face card-front">
+            <div>
+              <div class="icon">🔧</div>
+              <h3>工具箱</h3>
+            </div>
+            <p>实用的小工具集合。</p>
+          </div>
+
+          <div class="card-face card-back">
+            <div class="icon">🚧</div>
+            <h3>施工中...</h3>
+            <p>工程师正在疯狂敲代码，<br>请稍后再来探索！</p>
+          </div>
+
         </div>
       </a>
 

@@ -9,6 +9,7 @@
   --card-bg: rgba(255, 255, 255, 0.6);
   --card-border: rgba(255, 255, 255, 0.5);
   --card-hover-bg: rgba(255, 255, 255, 0.8);
+  --card-hover-bg-flip: rgba(255, 249, 241, 0.95);
   --cloud-opacity: 0.6;
   --btn-bg: rgba(255, 255, 255, 0.8);
   --btn-icon: #f59e0b;
@@ -163,6 +164,7 @@ header p {
    5. 卡片样式
    ========================================= */
 
+/* --- 修改后的 .card 样式 --- */
 .card {
   background: var(--card-bg);
   /* 使用变量 */
@@ -180,8 +182,8 @@ header p {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  /* 动画切换效果平滑 */
 }
 
 
@@ -281,4 +283,115 @@ header p {
   height: 24px;
   fill: var(--btn-icon);
   transition: fill 0.3s ease;
+}
+
+/* =========================================
+   新增：卡片 3D 翻转特效 (优化版)
+   ========================================= */
+
+/* 1. 场景容器 */
+.card-scene {
+  perspective: 1000px;
+}
+
+/* 2. 翻转容器 */
+.card-flipper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+/* 翻转状态 */
+.card-flipper.is-flipped {
+  transform: rotateY(180deg);
+}
+
+/* 3. 卡片正反面通用样式 */
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  /* 兼容 Safari */
+  border-radius: 20px;
+
+  /* === 样式补全 === */
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--card-border);
+  /* [修复1] 补上默认阴影，保持和普通卡片一致 */
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  /* 让阴影也有过渡效果 */
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+/* [修复2] 当鼠标悬停在整个场景上时，加强内部 Face 的阴影 */
+.card-scene:hover .card-face {
+  box-shadow: 0 15px 30px var(--shadow-color);
+}
+
+.card-scene:hover .card-front {
+  background-color: var(--card-hover-bg);
+}
+
+.card-scene:hover .card-back {
+  background: var(--card-hover-bg-flip);
+}
+
+/* 正面 */
+.card-front {
+  z-index: 2;
+}
+
+/* 背面 */
+.card-back {
+  transform: rotateY(180deg);
+  z-index: 1;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: rgba(255, 247, 237, 0.95);
+  /* 稍微不透明一点，防止背面文字透出 */
+}
+
+/* 深色模式下背面的调整 */
+body.dark-mode .card-back {
+  background: rgba(133, 74, 42, 0.8);
+}
+
+
+/* =========================================
+   特殊处理：翻转卡片的外壳重置
+   ========================================= */
+
+.card.card-scene {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0 !important;
+  perspective: 1000px;
+}
+
+.card.card-scene:hover {
+  background: transparent !important;
+  box-shadow: none !important;
+  background: var(--card-hover-bg);
+  /* [关键修改] 删掉了 transform: none; 
+       这样外壳依然会向上浮动 (-5px)，保持手感一致 */
+}
+
+.card-flipper {
+  border-radius: 20px;
 }
