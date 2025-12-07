@@ -1,4 +1,4 @@
-
+const now = new Date()
 // 获取元素
 const themeBtn = document.getElementById('theme-btn');
 const themeIcon = document.getElementById('theme-icon');
@@ -68,3 +68,91 @@ window.addEventListener('pageshow', (event) => {
     document.body.classList.remove('page-exiting');
   }
 });
+
+// -- 检验后端连通性逻辑 --
+
+// async function test_server_link() {
+//   try {
+//     const response_fetch = await fetch("http://localhost:3000");
+//     if (!response_fetch.ok) {
+//       throw new Error("HTTP状态码错误：", response_fetch.status);
+//     }
+//     const response = await response_fetch.json();
+//     if (response.success === true) {
+//       console.log("连接成功：", response.code || "无状态码");
+//     } else {
+//       console.log("连接成功，但业务状态失败：", response.message);
+//     }
+
+//   } catch (error) {
+//     console.log("连接错误：", error);
+//   }
+// }
+
+// 1. 修改 HTML：给这个特定的卡片加个 id，方便 JS 找它
+// <a href="javascript:void(0);" id="server-test-card" class="card" ... >
+
+async function test_server_link() {
+  const card = document.getElementById('server-test-card');
+  const iconDiv = card.querySelector('.icon');
+  const title = card.querySelector('h3');
+  const desc = card.querySelector('p');
+
+  // --- 阶段 1: 开始测试 (Loading 状态) ---
+  if (card.classList.contains('status-success')) return; // 已经成功了就不让点了
+
+  card.classList.add('status-loading');
+  iconDiv.innerHTML = '⏳';
+  desc.innerText = "正在呼叫服务器...";
+
+  try {
+    const startTime = performance.now();
+    // 模拟延迟
+    await new Promise(r => setTimeout(r, 800));
+
+    const response_fetch = await fetch("http://localhost:3000");
+    const endTime = performance.now();
+    const latency = (endTime - startTime).toFixed(0);
+    if (!response_fetch.ok) throw new Error("HTTP Error");
+    const response = await response_fetch.json();
+
+    if (response.success === true) {
+      // --- 阶段 2: 成功 (Success 状态) ---
+      card.classList.remove('status-loading');
+      card.classList.add('status-success');
+
+      // 更改内容
+      iconDiv.innerHTML = '✅';
+      title.innerText = "连接畅通";
+      desc.innerText = `延迟: ${latency}ms (Code: ${response.code})`;
+
+      // 3秒后自动复原 (可选，方便再次测试)
+      setTimeout(() => {
+        resetCard(card, iconDiv, title, desc);
+      }, 3000);
+    } else {
+      throw new Error(response.message);
+    }
+
+  } catch (error) {
+    // --- 阶段 3: 失败 (Error 状态) ---
+    card.classList.remove('status-loading');
+    card.classList.add('status-error');
+    iconDiv.innerHTML = '❌';
+    title.innerText = "连接失败";
+    desc.innerText = "请检查后端服务";
+    console.error(error);
+
+    // 2秒后复原
+    setTimeout(() => {
+      resetCard(card, iconDiv, title, desc);
+    }, 2000);
+  }
+}
+
+function resetCard(card, icon, title, desc) {
+  card.classList.remove('status-success', 'status-error');
+  icon.innerHTML = '🚦';
+  title.innerText = "访问后端";
+  desc.innerText = "检验后端服务器连通性";
+}

@@ -437,3 +437,137 @@ body.dark-mode .card-back {
   pointer-events: none;
   /* 动画播放时不许乱点 */
 }
+
+/* =========================================
+   后端测试卡片专用特效
+   ========================================= */
+
+/* 1. 基础状态：为了让图标翻转更自然 */
+#server-test-card .icon {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-block;
+}
+
+/* 2. Loading 状态：轻微呼吸 */
+.card.status-loading {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  /* 淡淡的蓝 */
+  cursor: wait;
+}
+
+.card.status-loading .icon {
+  /* === 新增：强制约束为正方形容器 === */
+  width: 40px;
+  /* 设置一个固定宽度 */
+  height: 40px;
+  /* 设置相同的高度，确保是正方形 */
+
+  /* === 新增：让内部的沙漏 Emoji 绝对居中 === */
+  display: inline-flex;
+  /* 使用 Flex 布局来居中 */
+  justify-content: center;
+  align-items: center;
+
+  /* === 核心：确保旋转中心在正中间 === */
+  transform-origin: center center;
+
+  /* 原有的动画 */
+  animation: spin 1s linear infinite;
+
+  /* 微调一下间距，防止它因为变成 Flex 而位置跑偏 */
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* 3. Success 状态：绿色 + 扩散波纹 */
+.card.status-success {
+  background: #10b981 !important;
+  /* 鲜艳的绿色 */
+  border-color: #059669 !important;
+  color: white !important;
+  /* 文字变白 */
+  transform: scale(1.02);
+  /* 稍微变大以示强调 */
+
+  /* 新增：让内容在成功状态下水平居中对齐 */
+  align-items: center;
+  text-align: center;
+
+  /* 核心动画：绿色脉冲波纹 */
+  animation: pulseGreen 0.6s ease-out;
+}
+
+/* 成功的图标动作：仅放大，去掉旋转 */
+.card.status-success .icon {
+  /* 删除 rotate(10deg) */
+  transform: scale(1.4);
+  /* 确保图标和文字之间有间距 */
+  margin-bottom: 15px;
+}
+
+.card.status-success p {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+@keyframes pulseGreen {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 20px rgba(16, 185, 129, 0);
+    /* 波纹扩散并消失 */
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+
+/* 4. Error 状态：红色 + 左右震动 */
+.card.status-error {
+  background: #ef4444 !important;
+  border-color: #b91c1c !important;
+  color: white !important;
+  animation: shake 0.5s cubic-bezier(.36, .07, .19, .97);
+}
+
+.card.status-error p {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+@keyframes shake {
+
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
