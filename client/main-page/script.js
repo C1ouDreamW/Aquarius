@@ -30,7 +30,7 @@ themeBtn.addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. 找到页面里所有的链接
+  // 找到页面里所有的链接
   const links = document.querySelectorAll('a');
 
   links.forEach(link => {
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 修复：防止浏览器“后退”按钮导致页面卡在空白状态
+// 防止浏览器“后退”按钮导致页面卡在空白状态
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
     document.body.classList.remove('page-exiting');
@@ -89,7 +89,6 @@ window.addEventListener('pageshow', (event) => {
 //   }
 // }
 
-// 1. 修改 HTML：给这个特定的卡片加个 id，方便 JS 找它
 // <a href="javascript:void(0);" id="server-test-card" class="card" ... >
 
 async function test_server_link() {
@@ -98,7 +97,7 @@ async function test_server_link() {
   const title = card.querySelector('h3');
   const desc = card.querySelector('p');
 
-  // --- 阶段 1: 开始测试 (Loading 状态) ---
+  // --- 开始测试 (Loading 状态) ---
   if (card.classList.contains('status-success')) return; // 已经成功了就不让点了
 
   card.classList.add('status-loading');
@@ -117,7 +116,7 @@ async function test_server_link() {
     const response = await response_fetch.json();
 
     if (response.success === true) {
-      // --- 阶段 2: 成功 (Success 状态) ---
+      // --- 成功 (Success 状态) ---
       card.classList.remove('status-loading');
       card.classList.add('status-success');
 
@@ -126,7 +125,7 @@ async function test_server_link() {
       title.innerText = "连接畅通";
       desc.innerText = `延迟: ${latency}ms (Code: ${response.code})`;
 
-      // 3秒后自动复原 (可选，方便再次测试)
+      // 3秒后自动复原
       setTimeout(() => {
         resetCard(card, iconDiv, title, desc);
       }, 3000);
@@ -135,7 +134,7 @@ async function test_server_link() {
     }
 
   } catch (error) {
-    // --- 阶段 3: 失败 (Error 状态) ---
+    // --- 失败 (Error 状态) ---
     card.classList.remove('status-loading');
     card.classList.add('status-error');
     iconDiv.innerHTML = '❌';
