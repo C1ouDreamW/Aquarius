@@ -1,3 +1,5 @@
+import { showToast } from './toast.js'
+
 const themeBtn = document.getElementById('theme-btn');
 const themeIcon = document.getElementById('theme-icon');
 const body = document.body;
@@ -8,6 +10,7 @@ const savedTheme = localStorage.getItem('theme');
 const input_name = document.getElementById('input_name');
 const input_email = document.getElementById('input_email');
 const input_message = document.getElementById('input_message');
+const btn = document.getElementById('submit-btn');
 
 if (savedTheme === 'dark') {
   body.classList.add('dark-mode');
@@ -25,12 +28,18 @@ themeBtn.addEventListener('click', () => {
   }
 });
 
+// 提交表单逻辑 
+
 async function submit_btn() {
   const submit_load = {
     name: input_name.value,
     email: input_email.value,
     message: input_message.value,
   };
+  if (!submit_load.name || !submit_load.email || !submit_load.message) {
+    showToast('请填写必要信息~🤔', 'error');
+    return;
+  }
   try {
     const res = await fetch("http://localhost:3000/api/connect", {
       method: 'POST',
@@ -42,17 +51,23 @@ async function submit_btn() {
     if (!res.ok) { throw new Error('HTTP错误，状态码：', res.status) };
 
     const resData = await res.json();
-    alert('已发送~');
+    showToast('发送成功~已经转交给作者啦😽', 'success');
     console.log('提交成功：', resData);
   } catch (err) {
     console.log("fetch出现异常：", err);
-    alert('发送失败，请检查网络或重试');
+    showToast('发送失败！请检查网络连接~😰', 'error');
   }
 }
 
+// 增加事件监听函数，因为在html中开启了js文件模块化，导致on_click()无法使用
+btn.addEventListener('click', (event) => {
+  event.preventDefault();
+  submit_btn();
+})
+
 // --- 退场动画延迟基本逻辑 ---
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. 找到页面里所有的链接
+  // 找到页面里所有的链接
   const links = document.querySelectorAll('a');
 
   links.forEach(link => {
@@ -60,17 +75,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const href = link.getAttribute('href');
       const target = link.getAttribute('target');
 
-      // 排除情况：
+      // 排除不必要情况：
       // 1. 如果没有链接地址
       // 2. 如果是锚点链接 (#开头)
       // 3. 如果是邮件链接 (mailto:)
       // 4. 如果是新窗口打开 (_blank)
       // 5. 如果是 JavaScript 动作
       if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('javascript:') || target === '_blank') {
-        return; // 直接放行，不拦截
+        return;
       }
 
-      // === 核心拦截逻辑 ===
       e.preventDefault(); // 阻止浏览器立即跳转
 
       // 给 body 加上离场类名，触发 CSS 里的 fadeOutDown 动画
@@ -84,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 修复：防止浏览器“后退”按钮导致页面卡在空白状态
+// 防止浏览器“后退”按钮导致页面卡在空白状态
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
     document.body.classList.remove('page-exiting');

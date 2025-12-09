@@ -1,0 +1,36 @@
+/* 发送消息成功后触发 Toast 提示 */
+.toast-message {
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 12px 25px;
+  border-radius: 50px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1000;
+
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast-message.show {
+  top: 30px;
+  opacity: 1;
+}
+
+.toast-success {
+  background: linear-gradient(135deg, #00b09b, #96c93d);
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #ff5f6d, #ffc371);
+}
