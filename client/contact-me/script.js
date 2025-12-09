@@ -26,31 +26,27 @@ themeBtn.addEventListener('click', () => {
 });
 
 async function submit_btn() {
+  const submit_load = {
+    name: input_name.value,
+    email: input_email.value,
+    message: input_message.value,
+  };
   try {
-    await fetch("http://localhost:3000/api/connect", {
+    const res = await fetch("http://localhost:3000/api/connect", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        name: input_name.value,
-        email: input_email.value,
-        message: input_message.value,
-      })
+      body: JSON.stringify(submit_load),
     })
-      .then(res => {
-        if (!res.ok) throw new Error("HTTP POST请求错误，", res.status);
-        return res.json();
-      })
-      .then(res => {
-        alert("已发送~");
-        console.log("提交成功：", res);
-      })
-      .catch(err => {
-        console.log("发生错误：", err);
-      })
+    if (!res.ok) { throw new Error('HTTP错误，状态码：', res.status) };
+
+    const resData = await res.json();
+    alert('已发送~');
+    console.log('提交成功：', resData);
   } catch (err) {
     console.log("fetch出现异常：", err);
+    alert('发送失败，请检查网络或重试');
   }
 }
 
