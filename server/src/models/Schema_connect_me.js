@@ -9,4 +9,5 @@ const connect_me = new mongoose.Schema({
   date: { type: Date, default: Date.now },
 })
 
-module.exports = mongoose.model('connect_me', connect_me, 'heycloudream');
+const heyDb = mongoose.connection.useDb('heycloudream');
+module.exports = heyDb.model('connect_me', connect_me, 'connect_me');

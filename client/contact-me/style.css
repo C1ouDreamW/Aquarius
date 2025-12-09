@@ -78,6 +78,11 @@ textarea {
   transition: all 0.3s ease;
 }
 
+#input_message {
+  min-height: 100px;
+  min-width: 250px;
+}
+
 /* 深色模式下输入框背景 */
 body.dark-mode input,
 body.dark-mode textarea {
