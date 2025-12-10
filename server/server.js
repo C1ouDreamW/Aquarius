@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, '../client')));
 
 // 首页路由
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/main-page/index.html'));
+  res.redirect('/main-page/index.html');
 });
 
 // 测试路由
