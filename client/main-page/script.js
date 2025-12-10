@@ -109,7 +109,7 @@ async function test_server_link() {
     // 模拟延迟
     await new Promise(r => setTimeout(r, 800));
 
-    const response_fetch = await fetch("http://localhost:3000");
+    const response_fetch = await fetch("/api/test-connect");
     const endTime = performance.now();
     const latency = (endTime - startTime).toFixed(0);
     if (!response_fetch.ok) throw new Error("HTTP Error");
