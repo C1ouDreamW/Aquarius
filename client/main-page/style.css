@@ -571,3 +571,41 @@ body.dark-mode .card-back {
     transform: translate3d(4px, 0, 0);
   }
 }
+
+/* =========================================
+   新增：ICP 备案号底部栏样式
+   ========================================= */
+.icp-footer {
+  width: 100%;
+  text-align: center;
+  padding: 15px 0;
+  margin-top: 20px;
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  z-index: 10;
+  position: relative;
+}
+
+@media (min-height: 800px) {
+  .icp-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    backdrop-filter: blur(2px);
+  }
+}
+
+.icp-footer p {
+  margin: 0;
+}
+
+.icp-footer a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+.icp-footer a:hover {
+  color: var(--text-main);
+  text-decoration: underline;
+}
