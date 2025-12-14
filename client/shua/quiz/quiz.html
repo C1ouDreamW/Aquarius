@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShuaShua - 答题中</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <button class="theme-toggle" id="theme-btn"><svg id="theme-icon" viewBox="0 0 24 24">
+      <path
+        d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z" />
+    </svg></button>
+
+  <div class="cloud-bg">
+    <svg class="cloud c1" viewBox="0 0 100 60">
+      <path
+        d="M84.5,22.9C82.7,10.1,71.7,0,58.1,0c-11.9,0-22,7.8-25.5,18.6C29.9,17.6,27,17,24.1,17c-9.8,0-17.8,7.5-18.9,17.1 C2.1,35.8,0,39.3,0,43.2C0,52.5,7.5,60,16.8,60h66.4C92.5,60,100,52.5,100,43.2C100,33.2,93.5,25,84.5,22.9z"
+        fill="#fff" />
+    </svg>
+  </div>
+
+  <div class="container">
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+    </div>
+
+    <div id="quiz-area" class="card quiz-card">
+      <div class="quiz-header">
+        <span id="quiz-tag" class="tag">加载中...</span>
+        <span id="quiz-counter" class="counter">1/10</span>
+      </div>
+
+      <h2 id="question-text">题目加载中...</h2>
+
+      <div id="options-list" class="options-list">
+      </div>
+
+      <div id="feedback-area" class="feedback-box" style="display: none;">
+        <p class="feedback-title">🔍 解答：</p>
+        <p id="explanation-text">暂无解析</p>
+      </div>
+
+      <div class="quiz-footer">
+        <button id="action-btn" class="submit-btn" disabled>提交答案</button>
+      </div>
+    </div>
+
+    <div id="result-area" class="card result-card" style="display: none;">
+      <div class="result-icon">🎉</div>
+      <h2>练习完成！</h2>
+      <p>你的分数是</p>
+      <div class="score-big" id="final-score-percent">100%</div>
+      <p class="score-detail" id="final-score-text">5 / 5 答对</p>
+
+      <div class="result-actions">
+        <button id="restart-btn" class="submit-btn" style="background: var(--text-main);">🔄 再练一次</button>
+        <a href="index.html" class="submit-btn"
+          style="margin-top: 10px; display:block; text-align:center; text-decoration:none;">🏠 返回首页</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="quiz.js"></script>
+</body>
+
+</html>

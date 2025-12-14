@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShuaShua - 练习设置</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <button class="theme-toggle" id="theme-btn"><svg id="theme-icon" viewBox="0 0 24 24">
+      <path
+        d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z" />
+    </svg></button>
+
+  <div class="cloud-bg">
+    <svg class="cloud c1" viewBox="0 0 100 60">
+      <path
+        d="M84.5,22.9C82.7,10.1,71.7,0,58.1,0c-11.9,0-22,7.8-25.5,18.6C29.9,17.6,27,17,24.1,17c-9.8,0-17.8,7.5-18.9,17.1 C2.1,35.8,0,39.3,0,43.2C0,52.5,7.5,60,16.8,60h66.4C92.5,60,100,52.5,100,43.2C100,33.2,93.5,25,84.5,22.9z"
+        fill="#fff" />
+    </svg>
+  </div>
+
+  <div class="container">
+    <header class="nav-header">
+      <a href="index.html" class="card back-btn-card">
+        ⬅️ 返回类别
+      </a>
+      <h1 id="category-title">加载中...</h1>
+    </header>
+
+    <div class="card setup-card">
+
+      <div class="info-banner" id="info-banner" style="display: none;">
+        <span class="icon">ℹ️</span>
+        <div class="text">
+          <p id="info-text-count">该分类已有 0 道题目</p>
+          <p class="sub-text">您可以在后台继续添加更多题目</p>
+        </div>
+      </div>
+
+      <div class="setup-section">
+        <h3>刷题模式</h3>
+        <div class="mode-grid">
+          <button class="mode-btn active" data-mode="SEQUENTIAL">
+            <span class="mode-icon">📝</span>
+            <span class="mode-name">顺序模式</span>
+            <span class="mode-desc">按题目保存顺序</span>
+          </button>
+          <button class="mode-btn" data-mode="RANDOM">
+            <span class="mode-icon">🔀</span>
+            <span class="mode-name">随机模式</span>
+            <span class="mode-desc">随机打乱题目</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="setup-section">
+        <h3>题目类型</h3>
+        <div class="type-grid">
+          <button class="type-btn active" data-type="ALL">全部题目</button>
+          <button class="type-btn" data-type="SINGLE">只看单选</button>
+          <button class="type-btn" data-type="MULTIPLE">只看多选</button>
+        </div>
+        <p id="filter-hint" class="hint-text"></p>
+      </div>
+
+      <div class="setup-section">
+        <h3>
+          题目数量: <span id="count-display" class="highlight-text">5</span>
+          <span id="max-count-hint" style="font-weight: normal; font-size: 0.9rem; color: var(--text-sub);">(最多 0
+            道)</span>
+        </h3>
+        <div class="slider-container">
+          <input type="range" id="count-slider" min="1" max="10" value="5" disabled>
+          <div class="slider-labels">
+            <span>1</span>
+            <span id="slider-max-label">10</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="error-msg" class="error-box" style="display: none;"></div>
+
+      <button id="start-btn" class="submit-btn" disabled>
+        开始练习 ▶️
+      </button>
+    </div>
+  </div>
+
+  <script type="module" src="setup.js"></script>
+</body>
+
+</html>

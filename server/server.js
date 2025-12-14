@@ -6,6 +6,7 @@ const app = express();
 const port = 3000;
 const cors = require('cors')
 const route_connect = require('./src/routes/connect-me');
+const route_shuashua = require('./src/routes/shuashua');
 const MongoURI = process.env.MongoURI;
 
 async function connectMongoDB() {
@@ -44,6 +45,8 @@ app.get('/api/test-connect', (req, res) => {
 
 // connect路由
 app.use('/api', route_connect);
+// shuashuashua路由
+app.use('/api/shuashua', route_shuashua);
 
 connectMongoDB();
 app.listen(port, () => { console.log("服务器已启动！访问：http://localhost:3000") });
