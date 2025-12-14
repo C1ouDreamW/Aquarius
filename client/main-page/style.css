@@ -18,6 +18,13 @@
 
   --change-speed: 0.5s;
   --change-color-speed: 0.3s
+    /* ICP底部栏专用变量*/
+    --icp-bg: rgba(255, 255, 255, 0.65);
+  --icp-border: rgba(255, 255, 255, 0.8);
+  --icp-text: #667c99;
+  --icp-text-hover: #2d6cdf;
+  --icp-divider: #cbd5e1;
+  --icp-shadow: rgba(0, 0, 0, 0.05);
 }
 
 /* --- 深色模式 - 当 body 拥有 .dark-mode 类时生效 --- */
@@ -35,6 +42,12 @@ body.dark-mode {
   --btn-icon: #fbbf24;
   /* 月亮的颜色 */
   --shadow-color: rgba(0, 0, 0, 0.4);
+  --icp-bg: rgba(15, 23, 42, 0.6);
+  --icp-border: rgba(255, 255, 255, 0.1);
+  --icp-text: #94a3b8;
+  --icp-text-hover: #60a5fa;
+  --icp-divider: #475569;
+  --icp-shadow: rgba(0, 0, 0, 0.3);
 }
 
 /* =========================================
@@ -573,39 +586,79 @@ body.dark-mode .card-back {
 }
 
 /* =========================================
-   新增：ICP 备案号底部栏样式
+   ICP 底部栏
    ========================================= */
 .icp-footer {
   width: 100%;
-  text-align: center;
-  padding: 15px 0;
-  margin-top: 20px;
-  font-size: 0.85rem;
-  color: var(--text-sub);
-  z-index: 10;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 20px;
   position: relative;
+  z-index: 10;
 }
 
+/* 如果屏幕够高，固定在底部 */
 @media (min-height: 800px) {
   .icp-footer {
     position: fixed;
     bottom: 0;
     left: 0;
-    backdrop-filter: blur(2px);
   }
 }
 
-.icp-footer p {
-  margin: 0;
+.icp-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  /* === 核心修改：使用变量替代固定颜色 === */
+  background: var(--icp-bg);
+  border: 1px solid var(--icp-border);
+  color: var(--icp-text);
+  box-shadow: 0 4px 15px var(--icp-shadow);
+
+  /* 磨砂效果 */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.5s ease, border 0.5s ease;
 }
 
-.icp-footer a {
+.icp-content:hover {
+  box-shadow: 0 6px 20px var(--icp-shadow);
+  transform: translateY(-2px);
+}
+
+.icp-item {
   text-decoration: none;
   color: inherit;
-  transition: color 0.3s ease;
+  /* 继承父级颜色 */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
 }
 
-.icp-footer a:hover {
-  color: var(--text-main);
-  text-decoration: underline;
+.icp-item:hover {
+  color: var(--icp-text-hover);
+  /* 使用高亮变量 */
+}
+
+.icp-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.divider {
+  width: 1px;
+  height: 12px;
+  background-color: var(--icp-divider);
+  /* 使用分割线变量 */
+  transition: background-color 0.5s ease;
 }
