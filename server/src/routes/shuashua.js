@@ -16,7 +16,7 @@ const handleResponse = (res, { data, error }) => {
   res.json({ success: true, data });
 };
 
-// 公开接口 (Public)
+// -- 公开接口
 // 获取所有类别
 router.get('/categories', async (req, res) => {
   const result = await supabase
@@ -40,10 +40,11 @@ router.get('/questions', async (req, res) => {
   handleResponse(res, result);
 });
 
-// 管理员接口
+// -- 管理员接口
 // 管理员登录
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
+  const email = `${username}@cloud.qwq`;
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,

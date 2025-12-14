@@ -1,6 +1,15 @@
 /* 引入主页的变量和基础样式，确保风格一致 */
 @import url('../main-page/style.css');
 
+
+/* 继承主页的字体设置 */
+input,
+button,
+textarea,
+select {
+  font-family: inherit;
+}
+
 /* ShuaShuaShua 特有样式修正 */
 
 /* 稍微加深一点背景，让题目文字更清晰 */
@@ -329,7 +338,7 @@ input[type=range]::-webkit-slider-thumb:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0);
   backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
@@ -784,4 +793,143 @@ body.dark-mode .option-btn {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* =========================================
+   新增：顶部统一导航栏
+   ========================================= */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+
+  /* 毛玻璃效果 */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+  z-index: 1000;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: background 0.3s, border-color 0.3s;
+}
+
+/* 深色模式适配 */
+body.dark-mode .navbar {
+  background: rgba(30, 41, 59, 0.7);
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+/* 左右两侧布局 */
+.nav-left,
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 左侧：返回主页按钮 */
+.home-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  color: var(--text-main);
+  transition: all 0.2s;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.home-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  transform: scale(1.05);
+}
+
+body.dark-mode .home-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Logo 文字 */
+.nav-logo {
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin-left: 4px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: default;
+}
+
+/* 右侧：导航链接 */
+.nav-link {
+  text-decoration: none;
+  color: var(--text-sub);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-link:hover {
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 导航栏里的主题按钮 (替代原来的悬浮球) */
+.nav-theme-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  color: var(--btn-icon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s;
+  margin-left: 8px;
+  border: 1px solid transparent;
+}
+
+.nav-theme-btn:hover {
+  transform: rotate(15deg);
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .nav-theme-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-theme-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+/* 给所有页面的容器加内边距 */
+.container {
+  padding-top: 70px !important;
+  padding-bottom: 100px !important;
+}
+
+.theme-toggle {
+  display: none !important;
 }

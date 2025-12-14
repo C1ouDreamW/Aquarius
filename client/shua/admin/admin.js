@@ -1,4 +1,4 @@
-import { api, initTheme, initTransitions, ICON_MAP } from './global.js';
+import { api, initTheme, initTransitions, ICON_MAP } from '../global.js';
 
 initTheme();
 initTransitions();
@@ -28,7 +28,7 @@ let selectedColor = 'bg-purple-100';
 const loginModal = document.getElementById('login-modal');
 const adminDashboard = document.getElementById('admin-dashboard');
 const loginBtn = document.getElementById('login-btn');
-const emailInput = document.getElementById('admin-email');
+const usernameInput = document.getElementById('admin-username');
 const passInput = document.getElementById('admin-password');
 const loginError = document.getElementById('login-error');
 
@@ -63,11 +63,11 @@ if (localStorage.getItem('admin_token')) {
 
 // 登录按钮点击事件
 loginBtn.addEventListener('click', async () => {
-  const email = emailInput.value.trim();
+  const username = usernameInput.value.trim();
   const password = passInput.value.trim();
 
-  if (!email || !password) {
-    showError('请输入邮箱和密码');
+  if (!username || !password) {
+    showError('请输入用户名和密码');
     return;
   }
 
@@ -76,7 +76,7 @@ loginBtn.addEventListener('click', async () => {
   loginError.style.display = 'none';
 
   try {
-    const { data, error } = await api.signIn(email, password);
+    const { data, error } = await api.signIn(username, password);
 
     if (error) {
       console.error('登录失败:', error);

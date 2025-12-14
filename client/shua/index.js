@@ -49,7 +49,7 @@ function renderCategories(categories) {
   categories.forEach(cat => {
     const card = document.createElement('a');
     card.className = 'card';
-    card.href = `setup.html?categoryId=${cat.id}`;
+    card.href = `./setup/setup.html?categoryId=${cat.id}`;
 
     const iconEmoji = ICON_MAP[cat.icon] || '❓';
 

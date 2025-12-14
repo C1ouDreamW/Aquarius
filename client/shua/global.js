@@ -35,11 +35,11 @@ export const api = {
   },
 
   // 登录
-  signIn: async (email, password) => {
+  signIn: async (username, password) => {
     const res = await fetch(`${API_BASE}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ username, password })
     });
     const json = await res.json();
     if (json.success) return { data: json, error: null };

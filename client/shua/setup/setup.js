@@ -1,4 +1,4 @@
-import { api, initTheme, initTransitions } from './global.js';
+import { api, initTheme, initTransitions } from '../global.js';
 
 initTheme();
 initTransitions();
