@@ -21,12 +21,12 @@ let currentCategoryName = '';
 let allQuestions = []; // 该类别的所有题目
 let filteredQuestions = []; // 经过类型筛选后的题目
 let settings = {
-  mode: 'SEQUENTIAL', // SEQUENTIAL | RANDOM
-  type: 'ALL',        // ALL | SINGLE | MULTIPLE
+  mode: 'SEQUENTIAL',
+  type: 'ALL',
   count: 5
 };
 
-// 1. 初始化：获取 URL 参数并加载数据
+// 获取 URL 参数并加载数据
 document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   currentCategoryId = params.get('categoryId');
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadQuestions();
 });
 
-// 2. 加载类别信息
+// 加载类别信息
 async function loadCategoryInfo() {
   const { data: categories, error } = await api.getCategories();
   if (!error && categories) {
@@ -51,11 +51,10 @@ async function loadCategoryInfo() {
   }
 }
 
-// 3. 加载题目数据
+// 加载题目数据
 async function loadQuestions() {
   try {
-    // 先获取所有题目，在前端进行筛选（如果数据量不大）
-    // 这里使用 categoryName 来查询，因为原项目结构 questions 表存的是 category 的名字
+    // 先获取所有题目，在前端进行筛选
     if (!currentCategoryName) return;
 
     const { data, error } = await api.getQuestions(currentCategoryName);
@@ -64,7 +63,6 @@ async function loadQuestions() {
 
     allQuestions = data || [];
 
-    // 更新 UI
     infoBanner.style.display = 'flex';
     infoTextCount.textContent = `该分类已有 ${allQuestions.length} 道题目`;
 
@@ -72,7 +70,7 @@ async function loadQuestions() {
       showError("该分类下暂无题目，无法开始练习");
       startBtn.disabled = true;
     } else {
-      applyFilters(); // 初始化过滤器
+      applyFilters();
     }
 
   } catch (err) {
@@ -81,7 +79,7 @@ async function loadQuestions() {
   }
 }
 
-// 4. 交互逻辑：模式选择
+// 模式选择
 document.querySelectorAll('.mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -90,17 +88,17 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
   });
 });
 
-// 5. 交互逻辑：类型选择
+// 类型选择
 document.querySelectorAll('.type-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     settings.type = btn.dataset.type;
-    applyFilters(); // 类型变了，可用题目数量也会变
+    applyFilters();
   });
 });
 
-// 6. 核心逻辑：应用过滤器 & 更新滑动条
+// 应用过滤器 & 更新滑动条
 function applyFilters() {
   // 过滤题目
   filteredQuestions = allQuestions.filter(q => {
@@ -130,9 +128,9 @@ function applyFilters() {
     startBtn.disabled = false;
     errorMsg.style.display = 'none';
 
-    // 修正当前选择的数量（不能超过最大值）
+    // 修正当前选择的数量
     let newCount = Math.min(settings.count, max);
-    if (newCount === 0) newCount = 1; // 至少1道
+    if (newCount === 0) newCount = 1;
     settings.count = newCount;
 
     updateSliderUI(newCount, max);
@@ -147,24 +145,23 @@ function updateSliderUI(val, max) {
   sliderMaxLabel.textContent = max;
 }
 
-// 7. 交互逻辑：滑动条拖动
+// 滑动条拖动
 countSlider.addEventListener('input', (e) => {
   const val = parseInt(e.target.value);
   settings.count = val;
   countDisplay.textContent = val;
 });
 
-// 8. 错误显示
+// 错误显示
 function showError(msg) {
   errorMsg.textContent = msg;
   errorMsg.style.display = 'block';
 }
 
-// 9. 点击开始：生成试卷并跳转
+// 点击开始
 startBtn.addEventListener('click', () => {
   if (filteredQuestions.length === 0) return;
 
-  // 准备题目逻辑 (洗牌 / 截取)
   let finalQuestions = [...filteredQuestions];
 
   if (settings.mode === 'RANDOM') {
@@ -174,15 +171,14 @@ startBtn.addEventListener('click', () => {
   // 截取数量
   finalQuestions = finalQuestions.slice(0, settings.count);
 
-  // 如果是随机模式，把选项也打乱 (可选，原版有这个功能)
   if (settings.mode === 'RANDOM') {
     finalQuestions = finalQuestions.map(q => ({
       ...q,
-      options: shuffleArray([...q.options]) // 注意要浅拷贝一下
+      options: shuffleArray([...q.options])
     }));
   }
 
-  // 存入 localStorage (因为 URL 传参太长了)
+  // 存入 localStorage
   const quizData = {
     questions: finalQuestions,
     settings: settings,

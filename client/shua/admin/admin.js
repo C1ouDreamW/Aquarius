@@ -3,9 +3,6 @@ import { api, initTheme, initTransitions, ICON_MAP } from './global.js';
 initTheme();
 initTransitions();
 
-// ================= 配置 =================
-// ❌ 删除：const ADMIN_PASSWORD = "admin123"; 
-// 现在身份验证交给后端 Auth 处理，不需要前端硬编码密码了
 
 const COLORS = [
   { label: '紫色', class: 'bg-purple-100' },
@@ -18,23 +15,20 @@ const COLORS = [
   { label: '靛蓝', class: 'bg-indigo-100' },
 ];
 
-// ================= 状态 =================
 let categories = [];
 let questions = [];
 let createQOptions = [
   { id: 'opt1', text: '' },
   { id: 'opt2', text: '' }
 ];
-// 新增类别的临时状态
 let selectedIcon = 'Cpu';
 let selectedColor = 'bg-purple-100';
 
-// ================= DOM 元素 =================
 // 登录
 const loginModal = document.getElementById('login-modal');
 const adminDashboard = document.getElementById('admin-dashboard');
 const loginBtn = document.getElementById('login-btn');
-const emailInput = document.getElementById('admin-email'); // 确保 HTML 里有这个 ID
+const emailInput = document.getElementById('admin-email');
 const passInput = document.getElementById('admin-password');
 const loginError = document.getElementById('login-error');
 
@@ -42,7 +36,7 @@ const loginError = document.getElementById('login-error');
 const navBtns = document.querySelectorAll('.nav-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 
-// 表单 - 创建题目
+// 创建题目
 const categorySelect = document.getElementById('q-category-select');
 const qText = document.getElementById('q-text');
 const optionsContainer = document.getElementById('options-container');
@@ -50,7 +44,7 @@ const addOptionBtn = document.getElementById('add-option-btn');
 const qExplanation = document.getElementById('q-explanation');
 const saveQBtn = document.getElementById('save-q-btn');
 
-// 表单 - 创建类别
+// 创建类别
 const catName = document.getElementById('cat-name');
 const catDesc = document.getElementById('cat-desc');
 const iconSelector = document.getElementById('icon-selector');
@@ -58,13 +52,11 @@ const colorSelector = document.getElementById('color-selector');
 const saveCatBtn = document.getElementById('save-cat-btn');
 const categoriesListDiv = document.getElementById('categories-list');
 
-// 列表 - 题目
+// 题目
 const questionsTableBody = document.querySelector('#questions-table tbody');
 const questionsLoader = document.getElementById('questions-loader');
 
-// ================= 1. 认证逻辑 =================
 
-// 简单检查本地是否有 token 标记 (实际校验在后端)
 if (localStorage.getItem('admin_token')) {
   showDashboard();
 }
@@ -84,7 +76,6 @@ loginBtn.addEventListener('click', async () => {
   loginError.style.display = 'none';
 
   try {
-    // ✨ 修复 1: 使用 api.signIn 替代 supabase.auth
     const { data, error } = await api.signIn(email, password);
 
     if (error) {
@@ -96,7 +87,7 @@ loginBtn.addEventListener('click', async () => {
       loginBtn.innerText = '登录';
       loginBtn.disabled = false;
     } else {
-      // 登录成功，保存 token (如果后端返回了 session)
+      // 登录成功，保存 token
       if (data.session) {
         localStorage.setItem('admin_token', data.session.access_token);
       }
@@ -127,7 +118,6 @@ function showError(msg) {
   loginError.style.display = 'block';
 }
 
-// ================= 2. 标签页切换 =================
 navBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     navBtns.forEach(b => b.classList.remove('active'));
@@ -142,10 +132,8 @@ navBtns.forEach(btn => {
   });
 });
 
-// ================= 3. 数据加载 =================
 
 async function loadCategories() {
-  // ✨ 修复 2: 移除了多余的 await
   const { data, error } = await api.getCategories();
 
   if (!error) {
@@ -157,7 +145,6 @@ async function loadCategories() {
 
 async function loadQuestions() {
   questionsLoader.style.display = 'block';
-  // 使用 api 获取数据
   const { data, error } = await api.getQuestions();
 
   questionsLoader.style.display = 'none';
@@ -168,7 +155,6 @@ async function loadQuestions() {
   }
 }
 
-// ================= 4. TAB: 创建题目逻辑 =================
 
 function renderCategorySelect() {
   categorySelect.innerHTML = categories.length === 0
@@ -261,7 +247,6 @@ saveQBtn.addEventListener('click', async () => {
       created_at: new Date().toISOString()
     };
 
-    // 已正确使用 api.addQuestion
     const { error } = await api.addQuestion(newQuestion);
 
     if (error) throw error;
@@ -284,7 +269,6 @@ saveQBtn.addEventListener('click', async () => {
   }
 });
 
-// ================= 5. TAB: 题库列表逻辑 =================
 
 function renderQuestionsTable() {
   questionsTableBody.innerHTML = questions.length === 0
@@ -312,7 +296,6 @@ window.deleteQuestion = async (id) => {
   }
 };
 
-// ================= 6. TAB: 创建类别逻辑 =================
 
 iconSelector.innerHTML = Object.keys(ICON_MAP).map(key => `
     <div class="selector-item ${key === 'Cpu' ? 'selected' : ''}" onclick="selectIcon('${key}')">
@@ -337,7 +320,6 @@ window.selectColor = (color) => {
   event.currentTarget.classList.add('selected');
 };
 
-// ✨ 修复 3: 保存类别 - 替换 supabase.insert 为 api.addCategory
 saveCatBtn.addEventListener('click', async () => {
   const name = catName.value.trim();
   if (!name) return alert('请输入类别名称');
@@ -383,11 +365,9 @@ function renderCategoriesList() {
     `).join('');
 }
 
-// ✨ 修复 4: 删除类别 - 替换 supabase.delete 为 api.deleteCategory，并移除密码验证
 window.deleteCategory = async (id) => {
   if (!confirm('⚠️ 警告：删除类别可能会导致该类别下的题目无法显示。\n确定要删除吗？')) return;
 
-  // 已移除密码二次验证，依赖登录状态
   try {
     const { error } = await api.deleteCategory(id);
     if (error) throw error;

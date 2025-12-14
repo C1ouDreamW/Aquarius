@@ -1,13 +1,13 @@
 import { api, initTheme, initTransitions, ICON_MAP } from './global.js';
 
-// 1. 初始化通用功能
+// 初始化通用功能
 initTheme();
 initTransitions();
 
 // 获取 DOM 容器
 const grid = document.getElementById('category-grid');
 
-// 2. 获取类别数据
+// 获取类别数据
 async function fetchCategories() {
   try {
     // 查询数据库
@@ -30,11 +30,10 @@ async function fetchCategories() {
   }
 }
 
-// 3. 渲染卡片逻辑
+// 渲染卡片逻辑
 function renderCategories(categories) {
-  grid.innerHTML = ''; // 清空加载动画
+  grid.innerHTML = '';
 
-  // 空状态处理
   if (!categories || categories.length === 0) {
     grid.innerHTML = `
             <div class="card" style="grid-column: 1/-1; text-align: center; cursor: default;">
@@ -48,17 +47,12 @@ function renderCategories(categories) {
 
   // 遍历生成卡片
   categories.forEach(cat => {
-    // 创建链接卡片
     const card = document.createElement('a');
     card.className = 'card';
-    // 点击跳转到设置页，并带上 ID
     card.href = `setup.html?categoryId=${cat.id}`;
 
-    // 获取 Emoji 图标，如果没有匹配则显示问号
     const iconEmoji = ICON_MAP[cat.icon] || '❓';
 
-    // 组装 HTML
-    // 注意：cat.color 对应的是我们在 style.css 里写的 .bg-purple-100 等类名
     card.innerHTML = `
             <div class="category-icon ${cat.color}">
                 ${iconEmoji}
@@ -76,8 +70,7 @@ function renderCategories(categories) {
     grid.appendChild(card);
   });
 }
-
-// 4. 启动！
+// 启动
 document.addEventListener('DOMContentLoaded', () => {
   fetchCategories();
 });
