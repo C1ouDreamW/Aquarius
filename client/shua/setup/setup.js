@@ -187,7 +187,7 @@ startBtn.addEventListener('click', () => {
   localStorage.setItem('current_quiz_data', JSON.stringify(quizData));
 
   // 跳转到答题页
-  window.location.href = 'quiz.html';
+  window.location.href = '../quiz/quiz.html';
 });
 
 // 工具函数：洗牌算法

@@ -10,12 +10,9 @@ select {
   font-family: inherit;
 }
 
-/* ShuaShuaShua 特有样式修正 */
 
-/* 稍微加深一点背景，让题目文字更清晰 */
 .card {
   background: var(--card-bg);
-  /* 继承自 aquarius */
 }
 
 /* 类别图标容器 */
@@ -30,7 +27,7 @@ select {
   margin-bottom: 15px;
 }
 
-/* 颜色类 (对应 Tailwind 的颜色，手动转为 CSS) */
+/* 颜色类 */
 .bg-purple-100 {
   background-color: #f3e8ff;
   color: #9333ea;
