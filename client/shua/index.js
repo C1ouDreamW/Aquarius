@@ -6,33 +6,59 @@ initTransitions();
 
 // 获取 DOM 容器
 const grid = document.getElementById('category-grid');
+const CACHE_KEY = 'shua_categories_cache';
 
 // 获取类别数据
 async function fetchCategories() {
+  const cachedData = sessionStorage.getItem(CACHE_KEY);
+  if (cachedData) {
+    try {
+      const categories = JSON.parse(cachedData);
+      renderCategories(categories);
+      console.log('🚀 Loaded from cache');
+    } catch (e) {
+      console.warn('Cache parse error', e);
+    }
+  }
+
   try {
-    // 查询数据库
+
     const { data: categories, error } = await api.getCategories();
 
     if (error) throw error;
 
-    // 渲染数据
-    renderCategories(categories);
+    const isDataChanged = JSON.stringify(categories) !== cachedData;
+
+    if (isDataChanged) {
+      console.log('🔄 Data updated from server');
+      // 更新缓存
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify(categories));
+      // 重新渲染
+      renderCategories(categories);
+    } else {
+      console.log('✅ Data is up to date');
+    }
 
   } catch (err) {
     console.error("加载类别失败:", err);
-    grid.innerHTML = `
+    if (!cachedData) {
+      grid.innerHTML = `
             <div class="card" style="grid-column: 1/-1; text-align: center; color: #ef4444; border-color: #fecaca;">
                 <div class="icon">⚠️</div>
                 <h3>加载失败</h3>
                 <p>无法连接到数据库，请检查网络或控制台日志。</p>
             </div>
         `;
+    }
   }
 }
 
 // 渲染卡片逻辑
 function renderCategories(categories) {
-  grid.innerHTML = '';
+  // 只有当有数据时才清空容器
+  if (grid.innerHTML.includes('loader') || categories.length > 0) {
+    grid.innerHTML = '';
+  }
 
   if (!categories || categories.length === 0) {
     grid.innerHTML = `
@@ -70,6 +96,7 @@ function renderCategories(categories) {
     grid.appendChild(card);
   });
 }
+
 // 启动
 document.addEventListener('DOMContentLoaded', () => {
   fetchCategories();
