@@ -46,7 +46,7 @@
 
     <div class="bento-grid">
 
-      <a href="#" class="card card-profile">
+      <span class="card card-profile">
         <div class="profile-content">
           <div class="icon">🚀</div>
           <h3 id="开发者">开发者</h3>
@@ -76,7 +76,7 @@
             </path>
           </svg>
         </div>
-      </a>
+      </span>
 
       <!-- <a href="/blog" class="card card-blog">
         <div class="icon">📝</div>
@@ -86,7 +86,7 @@
         </div>
       </a> -->
 
-      <a href="javascript:void(0);" class="card card-blog card-scene"
+      <span class="card card-blog card-scene"
         onclick="this.querySelector('.card-flipper').classList.toggle('is-flipped')">
         <div class="card-flipper">
           <div class="card-face card-front">
@@ -104,18 +104,17 @@
           </div>
 
         </div>
-      </a>
+      </span>
 
-      <a href="https://github.com/C1ouDreamW" target="_blank" class="card">
+      <span onclick="window.open('https://github.com/C1ouDreamW','_blank')" class="card">
         <div class="icon">💻</div>
         <div>
           <h3>GitHub</h3>
           <p>查看我的开源代码</p>
         </div>
-      </a>
+      </span>
 
-      <a href="javascript:void(0);" class="card card-scene"
-        onclick="this.querySelector('.card-flipper').classList.toggle('is-flipped')">
+      <span class="card card-scene" onclick="this.querySelector('.card-flipper').classList.toggle('is-flipped')">
         <div class="card-flipper">
           <div class="card-face card-front">
             <div>
@@ -132,9 +131,9 @@
           </div>
 
         </div>
-      </a>
+      </span>
 
-      <a href="javascript:void(0);" class="card card-scene"
+      <span href="javascript:void(0);" class="card card-scene"
         onclick="this.querySelector('.card-flipper').classList.toggle('is-flipped')">
         <div class="card-flipper">
           <div class="card-face card-front">
@@ -152,29 +151,29 @@
           </div>
 
         </div>
-      </a>
-      <a href="../shua/index.html" class="card">
+      </span>
+      <span onclick="window.location.href='../shua/index.html'" class="card">
         <div class="icon">🖊️</div>
         <div>
           <h3>ShuaShua</h3>
           <p>一个刷题网站</p>
         </div>
-      </a>
+      </span>
 
-      <a href="../contact-me/index.html" class="card">
+      <span onclick="window.location.href='../contact-me/index.html'" class="card">
         <div class="icon">📩</div>
         <div>
           <h3>联系我</h3>
           <p>交流一下</p>
         </div>
-      </a>
-      <a href="javascript:void(0);" id="server-test-card" class="card" onclick="test_server_link()">
+      </span>
+      <span id="server-test-card" class="card" onclick="test_server_link()">
         <div class="icon">🚦</div>
         <div>
           <h3>访问后端</h3>
           <p>检验后端服务器连通性</p>
         </div>
-      </a>
+      </span>
 
     </div>
   </div>
