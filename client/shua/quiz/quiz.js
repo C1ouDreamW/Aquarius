@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
   quizData = JSON.parse(rawData);
-
   renderQuestion();
 });
 
@@ -101,8 +100,7 @@ function handleOptionClick(id, btnElement) {
 function submitAnswer() {
   isAnswered = true;
   const currentQ = quizData.questions[currentIndex];
-  const correctIds = currentQ.correctOptionIds;
-
+  const correctIds = currentQ.correct_option_ids;
   const selectedArray = Array.from(selectedOptionIds);
   const isCorrect = selectedArray.length === correctIds.length &&
     selectedArray.every(id => correctIds.includes(id));
