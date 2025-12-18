@@ -53,7 +53,8 @@ const saveCatBtn = document.getElementById('save-cat-btn');
 const categoriesListDiv = document.getElementById('categories-list');
 
 // 题目
-const questionsTableBody = document.querySelector('#questions-table tbody');
+// const questionsTableBody = document.querySelector('#questions-table tbody');
+const groupedContainer = document.getElementById('grouped-questions-container');
 const questionsLoader = document.getElementById('questions-loader');
 
 
@@ -270,19 +271,163 @@ saveQBtn.addEventListener('click', async () => {
 });
 
 
+// function renderQuestionsTable() {
+//   questionsTableBody.innerHTML = questions.length === 0
+//     ? '<tr><td colspan="4" style="text-align:center; padding:20px;">暂无题目</td></tr>'
+//     : questions.map(q => `
+//             <tr>
+//                 <td>${q.text.substring(0, 20)}...</td>
+//                 <td>${q.category}</td>
+//                 <td>${q.type === 'SINGLE_CHOICE' ? '单选' : '多选'}</td>
+//                 <td class="col-action">
+//                     <button onclick="deleteQuestion('${q.id}')" title="删除">🗑️</button>
+//                 </td>
+//             </tr>
+//         `).join('');
+// }
+
+// admin.js
+
+// 中文数字映射表
+const cnNumMap = {
+  '一': 1, '二': 2, '三': 3, '四': 4, '五': 5,
+  '六': 6, '七': 7, '八': 8, '九': 9, '十': 10,
+  '十一': 11, '十二': 12, '十三': 13, '十四': 14, '十五': 15,
+  '十六': 16, '十七': 17, '十八': 18, '十九': 19, '二十': 20
+};
+
+// 计算排序权重的函数
+function getSortWeight(str) {
+  // 优先检测阿拉伯数字 (如: "第1章", "2. 测试")
+  const arabMatch = str.match(/\d+/);
+  if (arabMatch) {
+    return parseInt(arabMatch[0]); // 返回找到的数字，例如 2
+  }
+
+  // 检测中文数字 (如: "第一章", "毛概-第七章")
+  // 我们尝试匹配 "第X" 或者直接包含的中文数字
+  for (let key in cnNumMap) {
+    if (str.includes(key)) {
+      // 为了防止 "十一" 被误识别为 "十" 和 "一"，我们需要最长匹配优先
+      // 但简单的 includes 往往够用，只要 key 顺序得当（通常不用太纠结，除非你有第111章）
+      // 这里做一个简单的处理：如果是 "十二"，includes('十') 也为 true。
+      // 所以我们直接返回匹配到的第一个映射值即可，实际排序中
+      // 我们稍微优化一下：优先匹配双字（如十一），再匹配单字
+
+      // 更严谨的逻辑：正则提取
+      const cnMatch = str.match(/[一二三四五六七八九十]+/);
+      if (cnMatch) {
+        const numStr = cnMatch[0];
+        // 尝试直接查表，处理 "十一" 这种
+        if (cnNumMap[numStr]) return cnNumMap[numStr];
+
+        // 如果是 "二十一"，表里没有，就回退到简单的单字权重
+        // 这里简单起见，返回查到的第一个单字的权重
+        return cnNumMap[numStr.charAt(0)] || 9999;
+      }
+    }
+  }
+
+  // 如果都没有数字，返回一个很大的数，让它们排在后面
+  return 9999;
+}
+
 function renderQuestionsTable() {
-  questionsTableBody.innerHTML = questions.length === 0
-    ? '<tr><td colspan="4" style="text-align:center; padding:20px;">暂无题目</td></tr>'
-    : questions.map(q => `
+  groupedContainer.innerHTML = '';
+
+  if (questions.length === 0) {
+    groupedContainer.innerHTML = '<div style="text-align:center; padding:30px; color:#888;">暂无题目，快去添加吧~</div>';
+    return;
+  }
+
+  // 数据按类别分组
+  const groupedData = {};
+  questions.forEach(q => {
+    // 如果没有类别，归类为 "未分类"
+    const cat = q.category || '未分类';
+    if (!groupedData[cat]) {
+      groupedData[cat] = [];
+    }
+    groupedData[cat].push(q);
+  });
+  const sortedCategoryNames = Object.keys(groupedData).sort((a, b) => {
+    // 特殊处理：把 "未分类" 扔到最后
+    if (a === '未分类') return 1;
+    if (b === '未分类') return -1;
+
+    // 获取两个字符串的数字权重
+    const weightA = getSortWeight(a);
+    const weightB = getSortWeight(b);
+
+    // 如果两个都能提取出数字，按数字大小排
+    if (weightA !== weightB) {
+      return weightA - weightB;
+    }
+
+    // 如果数字权重一样，则按拼音排序
+    return a.localeCompare(b, 'zh-CN');
+  });
+
+  // 遍历每个类别生成 HTML
+  sortedCategoryNames.forEach(categoryName => {
+    const categoryQuestions = groupedData[categoryName];
+
+    // 创建外层 Group 容器
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'category-group';
+
+    // 生成头部 HTML
+    const headerHtml = `
+      <div class="category-group-header">
+        <div>
+          <span class="cat-title">${categoryName}</span>
+          <span class="cat-count">${categoryQuestions.length} 题</span>
+        </div>
+        <span class="toggle-icon">▼</span>
+      </div>
+    `;
+
+    // 生成表格内容 HTML
+    const rowsHtml = categoryQuestions.map(q => `
+      <tr>
+        <td style="width: 60%;">${q.text.substring(0, 30)}${q.text.length > 30 ? '...' : ''}</td>
+        <td style="width: 20%; color:#666; font-size:0.9em;">
+          ${q.type === 'SINGLE_CHOICE' ? '<span style="color:#28a745">● 单选</span>' : '<span style="color:#007bff">● 多选</span>'}
+        </td>
+        <td style="width: 20%; text-align: right;">
+          <button class="btn-delete" onclick="deleteQuestion('${q.id}')" title="删除">🗑️ 删除</button>
+        </td>
+      </tr>
+    `).join('');
+
+    const contentHtml = `
+      <div class="category-content">
+        <table class="category-table">
+          <thead>
             <tr>
-                <td>${q.text.substring(0, 20)}...</td>
-                <td>${q.category}</td>
-                <td>${q.type === 'SINGLE_CHOICE' ? '单选' : '多选'}</td>
-                <td class="col-action">
-                    <button onclick="deleteQuestion('${q.id}')" title="删除">🗑️</button>
-                </td>
+              <th>题目内容</th>
+              <th>题型</th>
+              <th style="text-align: right;">操作</th>
             </tr>
-        `).join('');
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    groupDiv.innerHTML = headerHtml + contentHtml;
+
+    // 绑定点击事件：点击头部切换展开/收起
+    const header = groupDiv.querySelector('.category-group-header');
+    header.addEventListener('click', () => {
+      // 切换当前组的 active 类
+      groupDiv.classList.toggle('active');
+    });
+
+    groupedContainer.appendChild(groupDiv);
+  });
 }
 
 window.deleteQuestion = async (id) => {
