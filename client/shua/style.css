@@ -930,3 +930,103 @@ body.dark-mode .nav-theme-btn:hover {
 .theme-toggle {
   display: none !important;
 }
+
+/* style.css */
+
+/* 分类标题栏 */
+.category-group-header {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  padding: 15px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+
+.category-group-header:hover {
+  background-color: #e2e6ea;
+}
+
+/* 激活状态（展开时） */
+.category-group.active .category-group-header {
+  background-color: #e3f2fd;
+  /* 浅蓝色背景 */
+  border-color: #bbdefb;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-bottom: 0;
+}
+
+/* 标题文字和徽章 */
+.cat-title {
+  font-weight: bold;
+  font-size: 1.05rem;
+  color: #333;
+}
+
+.cat-count {
+  background-color: #3d9bff85;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  margin-left: 8px;
+  font-family: inherit;
+}
+
+/* 箭头图标动画 */
+.toggle-icon {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+  color: #666;
+}
+
+.category-group.active .toggle-icon {
+  transform: rotate(180deg);
+}
+
+/* 折叠的内容区域 */
+.category-content {
+  display: none;
+  /* 默认隐藏 */
+  border: 1px solid #e9ecef;
+  border-top: none;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  animation: slideDown 0.3s ease-out;
+}
+
+/* 展开时显示 */
+.category-group.active .category-content {
+  display: block;
+}
+
+/* 内部表格样式调整 */
+.category-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.category-table th,
+.category-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.category-table th {
+  background-color: #fff;
+  color: #666;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.category-table tr:last-child td {
+  border-bottom: none;
+}
