@@ -1,0 +1,17 @@
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-sub);
+  font-weight: 600;
+  margin-bottom: 15px;
+  transition: color 0.3s;
+}
+
+.back-btn svg {
+  margin-right: 5px;
+}
+
+.back-btn:hover {
+  color: var(--text-main);
+}

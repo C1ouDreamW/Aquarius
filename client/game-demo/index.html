@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game</title>
+  <link rel="stylesheet" href="../main-page/style.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <header class="page-header">
+
+  </header>
+  <button class="theme-toggle" id="theme-btn" aria-label="切换主题">
+    <svg id="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z" />
+    </svg>
+  </button>
+  <div class="cloud-bg">
+    <svg class="cloud c1" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M84.5,22.9C82.7,10.1,71.7,0,58.1,0c-11.9,0-22,7.8-25.5,18.6C29.9,17.6,27,17,24.1,17c-9.8,0-17.8,7.5-18.9,17.1 C2.1,35.8,0,39.3,0,43.2C0,52.5,7.5,60,16.8,60h66.4C92.5,60,100,52.5,100,43.2C100,33.2,93.5,25,84.5,22.9z" />
+    </svg>
+    <svg class="cloud c2" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M84.5,22.9C82.7,10.1,71.7,0,58.1,0c-11.9,0-22,7.8-25.5,18.6C29.9,17.6,27,17,24.1,17c-9.8,0-17.8,7.5-18.9,17.1 C2.1,35.8,0,39.3,0,43.2C0,52.5,7.5,60,16.8,60h66.4C92.5,60,100,52.5,100,43.2C100,33.2,93.5,25,84.5,22.9z" />
+    </svg>
+    <svg class="cloud c3" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M84.5,22.9C82.7,10.1,71.7,0,58.1,0c-11.9,0-22,7.8-25.5,18.6C29.9,17.6,27,17,24.1,17c-9.8,0-17.8,7.5-18.9,17.1 C2.1,35.8,0,39.3,0,43.2C0,52.5,7.5,60,16.8,60h66.4C92.5,60,100,52.5,100,43.2C100,33.2,93.5,25,84.5,22.9z" />
+    </svg>
+    <svg class="cloud c4" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M84.5,22.9C82.7,10.1,71.7,0,58.1,0c-11.9,0-22,7.8-25.5,18.6C29.9,17.6,27,17,24.1,17c-9.8,0-17.8,7.5-18.9,17.1 C2.1,35.8,0,39.3,0,43.2C0,52.5,7.5,60,16.8,60h66.4C92.5,60,100,52.5,100,43.2C100,33.2,93.5,25,84.5,22.9z" />
+    </svg>
+  </div>
+
+  <div class="container">
+    <a href="../main-page/index.html" class="back-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+      </svg>
+      返回首页
+    </a>
+
+    <div style="display: flex; justify-content: center; align-items: center; margin: 20px 0;">
+      <iframe id="godot-game" src="./game/demo.html" width="1152" height="648"
+        style="border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-radius: 8px;"
+        allow="autoplay; fullscreen *; focus-without-user-activation; gamepad; gyroscope; accelerometer; clipboard-read; clipboard-write;"></iframe>
+    </div>
+  </div>
+
+
+  <!-- 备案号 -->
+  <footer class="icp-footer">
+    <div class="icp-content">
+      <a href="https://beian.miit.gov.cn/" target="_blank" class="icp-item">
+        豫ICP备2025156751号
+      </a>
+
+      <span class="divider">|</span>
+
+      <a href="https://beian.mps.gov.cn/#/query/webSearch?code=37011302000523" rel="noreferrer" target="_blank"
+        class="icp-item">
+        <img src="../assets/img/head-logo.png" class="icp-icon" />
+        鲁公网安备37011302000523号
+      </a>
+    </div>
+  </footer>
+
+  <script src="../main-page/script.js"></script>
+</body>
+
+</html>
