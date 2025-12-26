@@ -9,6 +9,8 @@
   <title>HeyCloudream - 个人主页</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="./profile.css">
+  <script defer src="https://tongji.heycloudream.cn/script.js"
+    data-website-id="d402a8f2-4c31-4c1f-9448-fbdb71694a3c"></script>
 </head>
 
 <body>
@@ -176,11 +178,20 @@
         </div>
       </span>
 
-      <span id="server-test-card" class="card" onclick="test_server_link()">
-        <div class="icon">🚦</div>
+      <!-- <span id="server-test-card" class="card" onclick="test_server_link()">
+              <div class="icon">🚦</div>
+              <div>
+                <h3>访问后端</h3>
+                <p>检验后端服务器连通性</p>
+              </div>
+            </span> -->
+
+      <!-- 新增cursor: pointer让鼠标悬浮显示手型，提升用户体验 -->
+      <span onclick="window.open('../gift/Merry-Christmas.html', '_blank')" class="card" style="cursor: pointer;">
+        <div class="icon">🎄</div>
         <div>
-          <h3>访问后端</h3>
-          <p>检验后端服务器连通性</p>
+          <h3>小礼物</h3>
+          <p>进去看看吧~</p>
         </div>
       </span>
 
