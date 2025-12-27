@@ -30,6 +30,7 @@ themeBtn.addEventListener('click', () => {
   }
 });
 
+
 document.addEventListener('DOMContentLoaded', () => {
   // 找到页面里所有的链接
   const links = document.querySelectorAll('a');
