@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>圣诞节快乐！！！</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">
+        { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/", "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm" } }
+    </script>
+  <script defer src="https://tongji.heycloudream.cn/script.js"
+    data-website-id="d402a8f2-4c31-4c1f-9448-fbdb71694a3c"></script>
+</head>
+
+<body>
+  <div id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text">系统正在初始化...</div>
+  </div>
+  <div id="canvas-container"></div>
+  <div id="title-container">
+    <h1 id="display-line1" class="title-line">Merry</h1>
+    <h1 id="display-line2" class="title-line">Christmas</h1>
+  </div>
+  <div id="ui-layer">
+    <div id="top-right-controls"><button class="elegant-btn glass-panel" id="fs-btn" onclick="toggleFullScreen()"
+        style="padding: 6px 12px;">⛶ 全屏显示</button><button class="elegant-btn glass-panel" id="toggle-ui-btn"
+        onclick="toggleUI()" style="padding: 6px 12px;">👁 隐藏界面</button></div>
+    <div id="left-sidebar" class="panel-hidden">
+      <div class="top-left-panel glass-panel">
+        <div class="ui-title-main">场景定制</div>
+        <div class="ui-title-sub">祝福语录</div>
+        <div class="control-row"><input type="text" id="input-line1" class="input-glass" placeholder="第一行文字"
+            oninput="updateTextConfig()"><input type="text" id="input-line2" class="input-glass" placeholder="第二行文字"
+            oninput="updateTextConfig()" style="margin-top:2px;"></div>
+        <div class="ui-title-sub">字体风格</div>
+        <select id="font-select" class="input-glass" onchange="updateTextConfig()">
+          <option value="style1">书法韵味</option>
+          <option value="style2">古典衬线</option>
+          <option value="style3">优雅手写</option>
+          <option value="style4">艺术线条</option>
+          <option value="style5">复古重磅</option>
+        </select>
+        <div class="control-row">
+          <div class="ui-title-sub" style="margin-top:6px;">大小 & 颜色</div>
+          <div style="display:flex; gap:8px; align-items:center;"><input type="range" min="50" max="250" value="100"
+              id="slider-fontsize" oninput="updateTextConfig()"><input type="color" id="color-picker" value="#fceea7"
+              oninput="updateTextConfig()" style="width:30px; height:20px; border:none;"></div>
+        </div>
+        <div class="ui-title-sub" style="border-top:1px solid rgba(255,255,255,0.05); padding-top:6px; margin-top:6px;">
+          背景音乐</div>
+        <div style="display:flex; gap:8px; margin-bottom:4px;"><button class="elegant-btn" onclick="toggleMusicPlay()"
+            id="play-btn" style="flex:2; font-size:14px;">⏯</button><button class="elegant-btn" onclick="replayMusic()"
+            style="flex:1; font-size:14px;">⟲</button></div>
+        <div class="control-row"><span class="control-label" style="text-align:center;">音量调节</span><input type="range"
+            min="0" max="100" value="50" id="slider-volume" oninput="updateVolume(this.value)"></div>
+        <div class="ui-title-sub" style="border-top:1px solid rgba(255,255,255,0.05); padding-top:6px; margin-top:6px;">
+          粒子控制</div>
+        <div class="particle-scroll-container">
+          <div class="control-row"><span class="control-label">装饰密度 (树)</span><input type="range" min="500" max="3000"
+              value="1500" id="slider-tree"></div>
+          <div class="control-row"><span class="control-label">星尘密度 (背景)</span><input type="range" min="500" max="5000"
+              value="2500" id="slider-dust"></div>
+          <div class="control-row"><span class="control-label">雪花数量</span><input type="range" min="0" max="3000"
+              step="100" value="1500" id="slider-snow-count" onchange="updateSnowSettings()"></div>
+          <div class="control-row"><span class="control-label">雪花大小</span><input type="range" min="0.05" max="0.3"
+              step="0.01" value="0.12" id="slider-snow-size" onchange="updateSnowSettings()"></div>
+          <div class="control-row"><span class="control-label">下落速度</span><input type="range" min="1.0" max="8.0"
+              step="0.5" value="3.5" id="slider-snow-speed" oninput="updateSnowSpeed(this.value)"></div>
+        </div>
+        <button class="elegant-btn" style="width:100%; margin-top:8px;" onclick="applyParticleSettings()">⚡
+          重置场景</button>
+      </div>
+      <div class="top-left-panel glass-panel">
+        <div class="ui-title-main">交互中控</div>
+        <div class="ui-title-sub">形态切换</div>
+        <div class="interaction-grid"><button class="elegant-btn" style="flex:1;" onclick="setMode('TREE')">聚合
+            (Space)</button><button class="elegant-btn" style="flex:1;" onclick="setMode('SCATTER')">散开 (Z)</button>
+        </div>
+        <button class="elegant-btn" style="width:100%;" onclick="triggerPhotoGrab()">抓取照片 (X)</button>
+        <div class="control-row" style="margin-top:8px;"><span class="control-label">旋转速度 (散开)</span><input type="range"
+            min="0.1" max="5.0" step="0.1" value="1.4" oninput="updateRotationSpeed(this.value)"></div>
+        <div class="direction-pad">
+          <div></div>
+          <div class="dir-btn" onmousedown="startRotate('up')" onmouseup="stopRotate()" onmouseleave="stopRotate()">▲
+          </div>
+          <div></div>
+          <div class="dir-btn" onmousedown="startRotate('left')" onmouseup="stopRotate()" onmouseleave="stopRotate()">◀
+          </div>
+          <div class="dir-btn" onclick="resetRotation()" style="font-size:10px;">●</div>
+          <div class="dir-btn" onmousedown="startRotate('right')" onmouseup="stopRotate()" onmouseleave="stopRotate()">▶
+          </div>
+          <div></div>
+          <div class="dir-btn" onmousedown="startRotate('down')" onmouseup="stopRotate()" onmouseleave="stopRotate()">▼
+          </div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-left-panel glass-panel panel-hidden">
+      <div class="ui-title-main" style="font-size:12px; margin-bottom:5px;">资源管理</div>
+      <label class="elegant-btn"> + 上传照片 <input type="file" id="file-input" multiple accept="image/*"> </label>
+      <button class="elegant-btn" onclick="openDeleteManager()">▣ 管理照片</button>
+      <label class="elegant-btn" id="music-upload-label"> ♫ 背景音乐 <input type="file" id="music-input"
+          accept=".mp3,audio/mpeg"> </label>
+      <button class="elegant-btn" id="toggle-cam-btn" onclick="toggleCameraDisplay()">📷 隐藏画面</button>
+    </div>
+  </div>
+  <div id="gesture-hint">正在初始化系统...</div>
+  <div id="webcam-wrapper"><canvas id="webcam-canvas" width="320" height="240"></canvas>
+    <div id="cam-status"></div>
+  </div>
+  <video id="webcam-video" autoplay playsinline muted style="display:none"></video>
+  <div id="delete-manager" class="hidden">
+    <div class="manager-title">照片库管理</div>
+    <div id="photo-grid"></div>
+    <div class="manager-actions"><button class="elegant-btn btn-red glass-panel" onclick="clearAllPhotos()"
+        style="padding: 8px 20px;">清空所有</button><button class="elegant-btn glass-panel" onclick="closeDeleteManager()"
+        style="padding: 8px 20px;">关闭</button></div>
+  </div>
+
+  <script type="module" src="./script.js"></script>
+</body>
+
+</html>

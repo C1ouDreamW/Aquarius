@@ -1,0 +1,448 @@
+/* =========================================
+   1. 定义颜色变量
+   ========================================= */
+:root {
+  /* --- 默认：浅色模式 --- */
+  --bg-gradient: linear-gradient(to bottom, #e0f2fe, #f0f9ff);
+  --text-main: #1e293b;
+  --text-sub: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --card-border: rgba(255, 255, 255, 0.5);
+  --card-hover-bg: rgba(255, 255, 255, 0.8);
+  --card-hover-bg-flip: rgba(255, 249, 241, 0.95);
+  --cloud-opacity: 0.6;
+  --btn-bg: rgba(255, 255, 255, 0.8);
+  --btn-icon: #f59e0b;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+  --change-speed: 0.8s;
+  --change-color-speed: 0.3s;
+  --change-border-speed: 1.2s;
+  --icp-bg: rgba(255, 255, 255, 0.65);
+  --icp-border: rgba(255, 255, 255, 0.8);
+  --icp-text: #667c99;
+  --icp-text-hover: #2d6cdf;
+  --icp-divider: #cbd5e1;
+  --icp-shadow: rgba(0, 0, 0, 0.05);
+  /* 新增：单独定义浅色/深色渐变（方便伪元素调用） */
+  --gradient-light: linear-gradient(to bottom, #e0f2fe, #f0f9ff);
+  --gradient-dark: linear-gradient(to bottom, #0f172a, #1e293b);
+}
+
+/* --- 深色模式 - 当 body 拥有 .dark-mode 类时生效 --- */
+body.dark-mode {
+  --bg-gradient: linear-gradient(to bottom, #0f172a, #1e293b);
+  --text-main: #ffffff;
+  --text-sub: #94a3b8;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-hover-bg: rgba(37, 49, 71, 0.9);
+  --card-hover-bg-flip: rgba(147, 89, 58, 0.8);
+  --cloud-opacity: 0.1;
+  /* 深色背景下云朵要淡一点 */
+  --btn-bg: rgba(30, 41, 59, 0.8);
+  --btn-icon: #fbbf24;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --icp-bg: rgba(15, 23, 42, 0.6);
+  --icp-border: rgba(255, 255, 255, 0.1);
+  --icp-text: #94a3b8;
+  --icp-text-hover: #60a5fa;
+  --icp-divider: #475569;
+  --icp-shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* =========================================
+   2. 全局样式
+   ========================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background var(--change-speed) ease, color var(--change-color-speed) ease;
+  /* 让颜色切换有过渡动画 */
+}
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  /* background: var(--bg-gradient); */
+  color: var(--text-main);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  transition: color var(--change-color-speed) ease;
+}
+
+/* 浅色渐变伪元素 */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-light);
+  z-index: -3;
+  opacity: 1;
+  transition: opacity var(--change-speed) ease;
+}
+
+/* 深色渐变伪元素 */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-dark);
+  z-index: -2;
+  opacity: 0;
+  transition: opacity var(--change-speed) ease;
+}
+
+body.dark-mode::before {
+  opacity: 0;
+}
+
+body.dark-mode::after {
+  opacity: 1;
+}
+
+/* =========================================
+   3. 云朵背景
+   ========================================= */
+.cloud-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cloud {
+  position: absolute;
+  fill: #fff;
+  opacity: var(--cloud-opacity);
+  /* 使用变量：根据模式自动变淡 */
+  filter: blur(5px);
+  animation: floatClouds 45s linear infinite;
+}
+
+@keyframes floatClouds {
+  0% {
+    transform: translateX(110vw);
+  }
+
+  100% {
+    transform: translateX(-50vw);
+  }
+}
+
+.c1 {
+  top: 10%;
+  width: 300px;
+  animation: floatClouds 45s linear infinite;
+}
+
+.c2 {
+  top: 60%;
+  width: 200px;
+  opacity: 0.3;
+  animation: floatClouds 30s linear infinite reverse;
+}
+
+.c3 {
+  top: 30%;
+  width: 120px;
+  opacity: 0.5;
+  animation: floatClouds 20s linear infinite;
+  animation-delay: -5s;
+}
+
+.c4 {
+  bottom: 5%;
+  width: 400px;
+  opacity: 0.2;
+  animation: floatClouds 60s linear infinite;
+  animation-delay: -20s;
+}
+
+/* =========================================
+   4. 主要内容区
+   ========================================= */
+.container {
+  width: 100%;
+  height: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  z-index: 1;
+}
+
+header {
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  /* 使用变量 */
+}
+
+header p {
+  color: var(--text-sub);
+  /* 使用变量 */
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(180px, auto);
+  gap: 20px;
+}
+
+/* .bento-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+/* =========================================
+   5. 卡片样式
+   ========================================= */
+
+.card {
+  background: var(--card-bg);
+  /* 使用变量 */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--card-border);
+  /* 使用变量 */
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+  border-radius: 20px;
+  padding: 25px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-main);
+  /* 使用变量 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background var(--change-speed) ease,
+    color var(--change-color-speed) ease,
+    border var(--change-border-speed) ease;
+}
+
+
+.card:hover {
+  transform: translateY(-5px);
+  background: var(--card-hover-bg);
+  /* 使用变量 */
+  box-shadow: 0 15px 30px var(--shadow-color);
+}
+
+.card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.card p {
+  color: var(--text-sub);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.icon {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+}
+
+
+.card-blog {
+  grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-profile,
+  .card-blog {
+    grid-column: span 1;
+  }
+
+  .c4 {
+    display: none;
+  }
+}
+
+/* =========================================
+   6. 切换按钮样式
+   ========================================= */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--btn-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  z-index: 100;
+  /* 保证在最上层 */
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.2) rotate(15deg);
+}
+
+.theme-toggle svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--btn-icon);
+  transition: fill 0.3s ease;
+}
+
+
+/* =========================================
+   页面切换动画 (Page Transitions)
+   ========================================= */
+
+/* 1. 定义入场动画关键帧：从下往上浮出，从透明变实 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+    /* 初始位置偏下 */
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 2. 定义离场动画关键帧：往下沉，变透明 */
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(30px);
+    /* 结束位置偏下 */
+  }
+}
+
+/* 3. 应用入场动画 */
+/* 给 .container 加上这个，页面一加载就会自动播放 */
+.container {
+  /* 0.8秒播完，使用 ease-out 让结尾很平滑，forwards 保持结束状态 */
+  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* 4. 离场样式 (这个类名会通过 JS 临时加上) */
+.page-exiting .container {
+  animation: fadeOutDown 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+  pointer-events: none;
+  /* 动画播放时不许乱点 */
+}
+
+
+
+/* =========================================
+   ICP 底部栏
+   ========================================= */
+.icp-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+/* 如果屏幕够高，固定在底部 */
+@media (min-height: 800px) {
+  .icp-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.icp-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  background: var(--icp-bg);
+  border: 1px solid var(--icp-border);
+  color: var(--icp-text);
+  box-shadow: 0 4px 15px var(--icp-shadow);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background var(--change-speed) ease, border var(--change-border-speed) ease;
+}
+
+.icp-content:hover {
+  box-shadow: 0 6px 20px var(--icp-shadow);
+  transform: translateY(-2px);
+}
+
+.icp-item {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+
+.icp-item:hover {
+  color: var(--icp-text-hover);
+}
+
+.icp-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.divider {
+  width: 1px;
+  height: 12px;
+  background-color: var(--icp-divider);
+  transition: background-color 0.5s ease;
+}
