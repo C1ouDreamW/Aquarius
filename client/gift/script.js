@@ -2,6 +2,7 @@ const now = new Date()
 // 获取元素
 const themeBtn = document.getElementById('theme-btn');
 const themeIcon = document.getElementById('theme-icon');
+const homeBtn = document.getElementById('go-home-btn');
 const body = document.body;
 
 // 定义svg图标

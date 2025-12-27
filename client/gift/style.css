@@ -325,6 +325,34 @@ header p {
   transition: fill 0.3s ease;
 }
 
+.go-home {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  z-index: 100;
+  /* 保证在最上层 */
+  transition: transform 0.3s ease;
+}
+
+.go-home:hover {
+  transform: scale(1.2)
+}
+
+.go-home svg {
+  width: 24px;
+  height: 24px;
+  transition: fill 0.3s ease;
+}
 
 /* =========================================
    页面切换动画 (Page Transitions)
