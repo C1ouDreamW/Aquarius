@@ -1,0 +1,736 @@
+/* =========================================
+   1. 定义颜色变量
+   ========================================= */
+:root {
+  /* --- 默认：浅色模式 --- */
+  --bg-gradient: linear-gradient(to bottom, #e0f2fe, #f0f9ff);
+  --text-main: #1e293b;
+  --text-sub: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --card-border: rgba(255, 255, 255, 0.5);
+  --card-hover-bg: rgba(255, 255, 255, 0.8);
+  --card-hover-bg-flip: rgba(255, 249, 241, 0.95);
+  --cloud-opacity: 0.6;
+  --btn-bg: rgba(255, 255, 255, 0.8);
+  --btn-icon: #f59e0b;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+  --change-speed: 0.8s;
+  --change-color-speed: 0.3s;
+  --change-border-speed: 1.2s;
+  --icp-bg: rgba(255, 255, 255, 0.65);
+  --icp-border: rgba(255, 255, 255, 0.8);
+  --icp-text: #667c99;
+  --icp-text-hover: #2d6cdf;
+  --icp-divider: #cbd5e1;
+  --icp-shadow: rgba(0, 0, 0, 0.05);
+  /* 新增：单独定义浅色/深色渐变（方便伪元素调用） */
+  --gradient-light: linear-gradient(to bottom, #e0f2fe, #f0f9ff);
+  --gradient-dark: linear-gradient(to bottom, #0f172a, #1e293b);
+}
+
+/* --- 深色模式 - 当 body 拥有 .dark-mode 类时生效 --- */
+body.dark-mode {
+  --bg-gradient: linear-gradient(to bottom, #0f172a, #1e293b);
+  --text-main: #ffffff;
+  --text-sub: #94a3b8;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-hover-bg: rgba(37, 49, 71, 0.9);
+  --card-hover-bg-flip: rgba(147, 89, 58, 0.8);
+  --cloud-opacity: 0.1;
+  /* 深色背景下云朵要淡一点 */
+  --btn-bg: rgba(30, 41, 59, 0.8);
+  --btn-icon: #fbbf24;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --icp-bg: rgba(15, 23, 42, 0.6);
+  --icp-border: rgba(255, 255, 255, 0.1);
+  --icp-text: #94a3b8;
+  --icp-text-hover: #60a5fa;
+  --icp-divider: #475569;
+  --icp-shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* =========================================
+   2. 全局样式
+   ========================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background var(--change-speed) ease, color var(--change-color-speed) ease;
+  /* 让颜色切换有过渡动画 */
+}
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  color: var(--text-main);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  transition: color var(--change-color-speed) ease;
+  margin: 0;
+  padding: 0;
+}
+
+/* 浅色渐变伪元素 */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-light);
+  z-index: -3;
+  opacity: 1;
+  transition: opacity var(--change-speed) ease;
+}
+
+/* 深色渐变伪元素 */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-dark);
+  z-index: -2;
+  opacity: 0;
+  transition: opacity var(--change-speed) ease;
+}
+
+body.dark-mode::before {
+  opacity: 0;
+}
+
+body.dark-mode::after {
+  opacity: 1;
+}
+
+/* =========================================
+   3. 云朵背景
+   ========================================= */
+.cloud-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cloud {
+  position: absolute;
+  fill: #fff;
+  opacity: var(--cloud-opacity);
+  /* 使用变量：根据模式自动变淡 */
+  filter: blur(5px);
+  animation: floatClouds 45s linear infinite;
+}
+
+@keyframes floatClouds {
+  0% {
+    transform: translateX(110vw);
+  }
+
+  100% {
+    transform: translateX(-50vw);
+  }
+}
+
+.c1 {
+  top: 10%;
+  width: 300px;
+  animation: floatClouds 45s linear infinite;
+}
+
+.c2 {
+  top: 60%;
+  width: 200px;
+  opacity: 0.3;
+  animation: floatClouds 30s linear infinite reverse;
+}
+
+.c3 {
+  top: 30%;
+  width: 120px;
+  opacity: 0.5;
+  animation: floatClouds 20s linear infinite;
+  animation-delay: -5s;
+}
+
+.c4 {
+  bottom: 5%;
+  width: 400px;
+  opacity: 0.2;
+  animation: floatClouds 60s linear infinite;
+  animation-delay: -20s;
+}
+
+/* =========================================
+   4. 主要内容区
+   ========================================= */
+.container {
+  width: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  z-index: 1;
+  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+header {
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  /* 使用变量 */
+  margin: 0;
+}
+
+header p {
+  color: var(--text-sub);
+  /* 使用变量 */
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+
+/* =========================================
+   5. 主题切换按钮和返回主页按钮
+   ========================================= */
+.theme-toggle {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--btn-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  z-index: 100;
+  /* 保证在最上层 */
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.2) rotate(15deg);
+}
+
+.back-home-btn,
+.back-prev-btn {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+
+.back-home-btn:hover,
+.back-prev-btn:hover {
+  transform: scale(1.2);
+}
+
+.theme-toggle svg,
+.back-home-btn svg,
+.back-prev-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--btn-icon);
+  transition: fill 0.3s ease;
+}
+
+/* 返回上一级按钮的 svg 路径是描边样式，需要特殊处理 */
+.back-prev-btn svg path {
+  stroke: black;
+  fill: none;
+}
+
+/* 主题切换按钮定位 */
+.theme-toggle {
+  top: 20px;
+  right: 20px;
+}
+
+/* 返回主页按钮定位 */
+.back-home-btn {
+  top: 20px;
+  left: 20px;
+}
+
+/* 返回上一级按钮定位 */
+.back-prev-btn {
+  top: 20px;
+  left: 80px;
+}
+
+/* =========================================
+   6. 抽奖内容区
+   ========================================= */
+.gift-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+/* 转盘主体 */
+.wheel-wrapper {
+  position: relative;
+  width: 450px;
+  height: 450px;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* 外发光光环 */
+  border-radius: 50%;
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--card-border);
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.wheel-wrapper:hover {
+  box-shadow: 0 15px 30px var(--shadow-color);
+  background: var(--card-hover-bg);
+}
+
+/* 指针 */
+.pointer {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 60px;
+  z-index: 50;
+  background: #ff4757;
+  clip-path: polygon(50% 100%, 0 15%, 100% 15%);
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.5));
+}
+
+.pointer::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 6px solid #ffd700;
+  /* 金色边框 */
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+  transition: transform 4s cubic-bezier(0.15, 0.8, 0.15, 0.99);
+  /* 缓动刹车 */
+  background: #fff;
+}
+
+/* 中心装饰盖 */
+.wheel::after {
+  content: "❤️";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #fff, #f0f0f0);
+  border: 4px solid #ffd700;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 40;
+}
+
+/* 扇形区域 */
+.sector {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 0;
+  right: 0;
+  transform-origin: 0% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+}
+
+/* 莫兰迪配色 */
+.sector:nth-child(1) {
+  transform: rotate(0deg) skewY(-30deg);
+  background: #FFB7B2;
+}
+
+.sector:nth-child(2) {
+  transform: rotate(60deg) skewY(-30deg);
+  background: #FFDAC1;
+}
+
+.sector:nth-child(3) {
+  transform: rotate(120deg) skewY(-30deg);
+  background: #E2F0CB;
+}
+
+.sector:nth-child(4) {
+  transform: rotate(180deg) skewY(-30deg);
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+}
+
+/* 必中项 */
+.sector:nth-child(5) {
+  transform: rotate(240deg) skewY(-30deg);
+  background: #C7CEEA;
+}
+
+.sector:nth-child(6) {
+  transform: rotate(300deg) skewY(-30deg);
+  background: #F3E5F5;
+}
+
+.sector span {
+  display: block;
+  width: 300px;
+  transform: skewY(30deg) rotate(30deg) translate(0px, 50px);
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5);
+  text-align: center;
+  line-height: 1.2;
+  font-family: inherit;
+}
+
+.sector:nth-child(4) span {
+  color: #faeb1c;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  font-size: 18px;
+}
+
+/* 抽奖按钮 */
+.btn-spin {
+  padding: 15px 60px;
+  font-size: 1.4rem;
+  font-family: inherit;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+  transition: all 0.3s ease;
+  z-index: 10;
+  position: relative;
+  font-weight: 600;
+  backdrop-filter: blur(15px);
+}
+
+.btn-spin:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px var(--shadow-color);
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+.btn-spin:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+}
+
+.btn-spin:disabled {
+  background: var(--card-bg);
+  color: var(--text-sub);
+  box-shadow: none;
+  cursor: default;
+}
+
+/* =========================================
+   7. 弹窗样式
+   ========================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--card-border);
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  width: 85%;
+  max-width: 380px;
+  box-shadow: 0 15px 30px var(--shadow-color);
+  transform: scale(0.8) translateY(20px);
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+}
+
+.modal-overlay.show .modal-content {
+  transform: scale(1) translateY(0);
+}
+
+.gift-img {
+  width: 100%;
+  height: 250px;
+  object-fit: contain;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+  margin-bottom: 20px;
+  border: 3px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 15px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.gift-img:hover {
+  transform: scale(1.05) translateY(-5px);
+  box-shadow: 0 15px 30px var(--shadow-color);
+}
+
+.modal-text h2 {
+  color: var(--text-main);
+  font-size: 1.8rem;
+  margin: 0 0 15px;
+  font-weight: 700;
+}
+
+.modal-text p {
+  color: var(--text-sub);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* 返回箭头样式 */
+.back-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  color: var(--text-sub);
+  /* 默认灰色 */
+  transition: all 0.3s ease;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  /* 圆形触摸区 */
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+}
+
+.back-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.back-btn:hover {
+  color: var(--text-main);
+  /* 悬停变主色 */
+  background: var(--card-hover-bg);
+  /* 微微的背景色 */
+  transform: translateX(-3px);
+  /* 稍微向左动一下，提示返回 */
+}
+
+/* =========================================
+   8. ICP 底部栏
+   ========================================= */
+.icp-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 20px;
+  position: relative;
+  z-index: 10;
+  margin-top: 60px;
+}
+
+/* 如果屏幕够高，固定在底部 */
+@media (min-height: 800px) {
+  .icp-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.icp-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  background: var(--icp-bg);
+  border: 1px solid var(--icp-border);
+  color: var(--icp-text);
+  box-shadow: 0 4px 15px var(--icp-shadow);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background var(--change-speed) ease, border var(--change-border-speed) ease;
+}
+
+.icp-content:hover {
+  box-shadow: 0 6px 20px var(--icp-shadow);
+  transform: translateY(-2px);
+}
+
+.icp-item {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+
+.icp-item:hover {
+  color: var(--icp-text-hover);
+}
+
+.icp-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.divider {
+  width: 1px;
+  height: 12px;
+  background-color: var(--icp-divider);
+  transition: background-color 0.5s ease;
+}
+
+/* =========================================
+   9. 入场动画
+   ========================================= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+    /* 初始位置偏下 */
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================
+   10. 响应式设计
+   ========================================= */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  header p {
+    font-size: 1rem;
+  }
+
+  .wheel-wrapper {
+    width: 320px;
+    height: 320px;
+  }
+
+  .btn-spin {
+    padding: 12px 40px;
+    font-size: 1.2rem;
+  }
+
+  .gift-content {
+    gap: 20px;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 400px) {
+  .wheel-wrapper {
+    width: 280px;
+    height: 280px;
+  }
+
+  .modal-content {
+    padding: 20px;
+  }
+
+  .gift-img {
+    height: 200px;
+  }
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="author" content="C1ouDream">
+  <title>🎁 小礼物 - 抽奖</title>
+  <link rel="stylesheet" href="../../main-page/style.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://tongji.heycloudream.cn/script.js"
+    data-website-id="d402a8f2-4c31-4c1f-9448-fbdb71694a3c"></script>
+</head>
+
+<body>
+  <button class="back-home-btn" id="backHomeBtn" aria-label="返回主页">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor" />
+    </svg>
+  </button>
+  <button class="back-prev-btn" id="backPrevBtn" aria-label="返回上一级">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" />
+    </svg>
+  </button>
+  <button class="theme-toggle" id="theme-btn" aria-label="切换主题">
+    <svg id="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z" />
+    </svg>
+  </button>
+  <div class="cloud-bg">
+    <svg class="cloud c1" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M84.5,22.9C82.7,10.1,71.7,0,58.1,0c-11.9,0-22,7.8-25.5,18.6C29.9,17.6,27,17,24.1,17c-9.8,0-17.8,7.5-18.9,17.1 C2.1,35.8,0,39.3,0,43.2C0,52.5,7.5,60,16.8,60h66.4C92.5,60,100,52.5,100,43.2C100,33.2,93.5,25,84.5,22.9z" />
+    </svg>
+    <svg class="cloud c2" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M84.5,22.9C82.7,10.1,71.7,0,58.1,0c-11.9,0-22,7.8-25.5,18.6C29.9,17.6,27,17,24.1,17c-9.8,0-17.8,7.5-18.9,17.1 C2.1,35.8,0,39.3,0,43.2C0,52.5,7.5,60,16.8,60h66.4C92.5,60,100,52.5,100,43.2C100,33.2,93.5,25,84.5,22.9z" />
+    </svg>
+    <svg class="cloud c3" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M84.5,22.9C82.7,10.1,71.7,0,58.1,0c-11.9,0-22,7.8-25.5,18.6C29.9,17.6,27,17,24.1,17c-9.8,0-17.8,7.5-18.9,17.1 C2.1,35.8,0,39.3,0,43.2C0,52.5,7.5,60,16.8,60h66.4C92.5,60,100,52.5,100,43.2C100,33.2,93.5,25,84.5,22.9z" />
+    </svg>
+    <svg class="cloud c4" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M84.5,22.9C82.7,10.1,71.7,0,58.1,0c-11.9,0-22,7.8-25.5,18.6C29.9,17.6,27,17,24.1,17c-9.8,0-17.8,7.5-18.9,17.1 C2.1,35.8,0,39.3,0,43.2C0,52.5,7.5,60,16.8,60h66.4C92.5,60,100,52.5,100,43.2C100,33.2,93.5,25,84.5,22.9z" />
+    </svg>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>🎁 抽奖</h1>
+      <p>试试你的手气，看看能抽到什么小礼物~</p>
+    </header>
+
+    <div class="gift-content">
+      <div class="wheel-wrapper">
+        <div class="pointer"></div>
+        <div class="wheel" id="wheel">
+          <div class="sector"><span>亲亲<br>想亲就亲~</span></div>
+          <div class="sector"><span>爱的抱抱<br>无限次</span></div>
+          <div class="sector"><span>看电影<br>VIP座</span></div>
+          <div class="sector"><span>🎁<br>神秘大奖</span></div>
+          <div class="sector"><span>喝奶茶<br>全糖</span></div>
+          <div class="sector"><span>捶背券<br>10分钟</span></div>
+        </div>
+      </div>
+
+      <button class="btn-spin" id="spinBtn">GO! 开启好运</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="resultModal">
+    <div class="modal-content">
+      <div class="back-btn" id="closeModalBtn">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </div>
+      <img src="./scarf.png" alt="围巾" class="gift-img">
+
+      <div class="modal-text">
+        <h2>🎁 定制大奖！</h2>
+        <p>其实不管指针转到哪里，<br>我的心意都会稳稳停在你这里~<br>围巾是时间编织的爱意，希望你能喜欢~</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 备案号 -->
+  <footer class="icp-footer">
+    <div class="icp-content">
+      <a href="https://beian.miit.gov.cn/" target="_blank" class="icp-item">
+        豫ICP备2025156751号
+      </a>
+
+      <span class="divider">|</span>
+
+      <a href="https://beian.mps.gov.cn/#/query/webSearch?code=37011302000523" rel="noreferrer" target="_blank"
+        class="icp-item">
+        <img src="../../assets/img/head-logo.png" class="icp-icon" />
+        鲁公网安备37011302000523号
+      </a>
+    </div>
+  </footer>
+
+  <script src="../../main-page/script.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
