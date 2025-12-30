@@ -32,7 +32,6 @@ themeBtn.addEventListener('click', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 找到页面里所有的链接
   const links = document.querySelectorAll('a');
 
   links.forEach(link => {
@@ -40,23 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const href = link.getAttribute('href');
       const target = link.getAttribute('target');
 
-      // 排除情况：
-      // 1. 如果没有链接地址
-      // 2. 如果是锚点链接 (#开头)
-      // 3. 如果是邮件链接 (mailto:)
-      // 4. 如果是新窗口打开 (_blank)
-      // 5. 如果是 JavaScript 动作
       if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('javascript:') || target === '_blank') {
-        return; // 直接放行，不拦截
+        return;
       }
 
-      // === 核心拦截逻辑 ===
-      e.preventDefault(); // 阻止浏览器立即跳转
+      e.preventDefault();
 
-      // 给 body 加上离场类名，触发 CSS 里的 fadeOutDown 动画
       document.body.classList.add('page-exiting');
 
-      // 等待 500毫秒 (0.5秒) 动画播完，再手动跳转
       setTimeout(() => {
         window.location.href = href;
       }, 500);
@@ -64,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 防止浏览器“后退”按钮导致页面卡在空白状态
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
     document.body.classList.remove('page-exiting');

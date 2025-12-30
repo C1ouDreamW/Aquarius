@@ -187,6 +187,16 @@ window.setupEvents = function () {
     }
   });
 
+  // 添加点击事件处理，实现点击圣诞树切换模式
+  const canvasContainer = document.getElementById('canvas-container');
+  canvasContainer.addEventListener('click', () => {
+    if (STATE.mode === 'TREE') {
+      setMode('SCATTER');
+    } else if (STATE.mode === 'SCATTER') {
+      setMode('TREE');
+    }
+  });
+
 }
 
 
@@ -456,6 +466,17 @@ window.setupEvents = () => {
   window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight) });
   document.getElementById('file-input').addEventListener('change', e => { Array.from(e.target.files).forEach(f => { const r = new FileReader(); r.onload = ev => { const i = new Image(); i.src = ev.target.result; i.onload = () => { const id = savePhotoToDB(ev.target.result); createPhotoTexture(ev.target.result, id) } }; r.readAsDataURL(f) }) });
   document.getElementById('music-input').addEventListener('change', e => { const f = e.target.files[0]; if (f) { saveMusicToDB(f); bgmAudio.src = URL.createObjectURL(f); bgmAudio.play().then(() => { isMusicPlaying = true; updatePlayBtnUI(true) }).catch(console.error) } });
+
+  // 点击事件处理 - 点击圣诞树场景时触发功能
+  const canvasContainer = document.getElementById('canvas-container');
+  canvasContainer.addEventListener('click', () => {
+    // 根据当前模式切换状态
+    if (STATE.mode === 'TREE') {
+      setMode('SCATTER');
+    } else {
+      setMode('TREE');
+    }
+  });
 
   // 键盘交互
   window.addEventListener('keydown', (e) => {
