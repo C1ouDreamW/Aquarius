@@ -343,7 +343,7 @@ function createCenterText() {
   canvas.height = 512;
 
   const line1 = "朱铭";
-  const line2 = "圣诞节快乐";
+  const line2 = "圣诞节快乐~";
 
   ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
   ctx.shadowBlur = 15;
@@ -456,7 +456,16 @@ window.setupEvents = () => {
   window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight) });
   document.getElementById('file-input').addEventListener('change', e => { Array.from(e.target.files).forEach(f => { const r = new FileReader(); r.onload = ev => { const i = new Image(); i.src = ev.target.result; i.onload = () => { const id = savePhotoToDB(ev.target.result); createPhotoTexture(ev.target.result, id) } }; r.readAsDataURL(f) }) });
   document.getElementById('music-input').addEventListener('change', e => { const f = e.target.files[0]; if (f) { saveMusicToDB(f); bgmAudio.src = URL.createObjectURL(f); bgmAudio.play().then(() => { isMusicPlaying = true; updatePlayBtnUI(true) }).catch(console.error) } });
-
+  // 点击事件处理 - 点击圣诞树场景时触发功能
+  const canvasContainer = document.getElementById('canvas-container');
+  canvasContainer.addEventListener('click', () => {
+    // 根据当前模式切换状态
+    if (STATE.mode === 'TREE') {
+      setMode('SCATTER');
+    } else {
+      setMode('TREE');
+    }
+  });
   // 键盘交互
   window.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
