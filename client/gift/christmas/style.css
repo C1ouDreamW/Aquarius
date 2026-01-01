@@ -610,7 +610,7 @@ input[type="color"] {
   display: none !important;
 }
 
-/* 隐藏摄像头预览 */
+/* 隐藏摄像头预览  */
 #webcam-wrapper {
   opacity: 0 !important;
   pointer-events: none !important;

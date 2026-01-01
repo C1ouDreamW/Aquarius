@@ -353,7 +353,7 @@ function createCenterText() {
   canvas.height = 512;
 
   const line1 = "朱铭";
-  const line2 = "圣诞节快乐";
+  const line2 = "圣诞节快乐~";
 
   ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
   ctx.shadowBlur = 15;
