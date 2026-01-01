@@ -9,25 +9,24 @@ class FireworksEffect {
     this.fireworkInterval = null;
     this.isRunning = false;
     this.animationId = null;
-    
+
     this.init();
   }
-  
+
   init() {
-    // 创建Canvas元素
     this.canvas = document.createElement('canvas');
     this.canvas.id = 'fireworks-canvas';
     this.ctx = this.canvas.getContext('2d');
-    
+
     // 设置Canvas大小
     this.resizeCanvas();
-    
+
     // 添加到页面
     document.body.appendChild(this.canvas);
-    
+
     // 绑定事件处理函数，保存引用以便后续移除
     this.clickHandler = (e) => this.createFirework(e.clientX, e.clientY);
-    
+
     let lastScrollY = window.scrollY;
     this.scrollHandler = () => {
       const currentScrollY = window.scrollY;
@@ -39,36 +38,36 @@ class FireworksEffect {
         lastScrollY = currentScrollY;
       }
     };
-    
+
     // 窗口大小变化时调整Canvas
     this.resizeHandler = () => this.resizeCanvas();
-    
+
     // 调用自动触发方法
     this.startAutoFireworks();
-    
+
     // 点击触发
     document.addEventListener('click', this.clickHandler);
-    
+
     // 滚动触发
     window.addEventListener('scroll', this.scrollHandler);
-    
+
     // 窗口大小变化时调整Canvas
     window.addEventListener('resize', this.resizeHandler);
-    
+
     // 开始动画循环
     this.animate();
   }
-  
+
   resizeCanvas() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
   }
-  
+
   startAutoFireworks() {
     if (this.fireworkInterval) return;
-    
+
     this.isRunning = true;
-    // 每隔2-4秒自动触发一次烟花
+    // 自动触发烟花
     this.fireworkInterval = setInterval(() => {
       if (this.isRunning) {
         this.createFirework(
@@ -78,7 +77,7 @@ class FireworksEffect {
       }
     }, Math.random() * 2000 + 1000);
   }
-  
+
   stopAutoFireworks() {
     this.isRunning = false;
     if (this.fireworkInterval) {
@@ -86,10 +85,10 @@ class FireworksEffect {
       this.fireworkInterval = null;
     }
   }
-  
+
   createFirework(x, y) {
     // 创建火箭对象
-    console.log('Creating rocket at', x, y);
+    // console.log('Creating rocket at', x, y);
     this.rockets.push({
       x: x,
       y: window.innerHeight,
@@ -103,14 +102,14 @@ class FireworksEffect {
       height: this.isMobile ? 30 : 40
     });
   }
-  
+
   createParticle(x, y) {
     // 随机方向和速度
     const angle = Math.random() * Math.PI * 2;
     const speed = Math.random() * 5 + 3;
     const vx = Math.cos(angle) * speed;
     const vy = Math.sin(angle) * speed;
-    
+
     // 返回粒子对象
     return {
       x: x,
@@ -123,19 +122,19 @@ class FireworksEffect {
       size: this.isMobile ? 2 : 4
     };
   }
-  
+
   animate() {
     // 清空画布
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    
+
     // 更新和绘制火箭
     for (let i = this.rockets.length - 1; i >= 0; i--) {
       const rocket = this.rockets[i];
-      
+
       // 更新火箭速度和位置
       rocket.speed += rocket.acceleration;
       rocket.y -= rocket.speed;
-      
+
       // 检查火箭是否到达目标位置
       if (rocket.y <= rocket.targetY) {
         for (let j = 0; j < this.particleCount; j++) {
@@ -145,9 +144,9 @@ class FireworksEffect {
         this.rockets.splice(i, 1);
         continue;
       }
-      
+
       rocket.opacity = Math.min(1, rocket.speed / 10);
-      
+
       // 绘制火箭轨迹
       this.ctx.save();
       this.ctx.globalAlpha = rocket.opacity;
@@ -159,63 +158,63 @@ class FireworksEffect {
       this.ctx.stroke();
       this.ctx.restore();
     }
-    
+
     // 更新和绘制粒子
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const particle = this.particles[i];
-      
+
       // 更新粒子位置
       particle.x += particle.vx;
       particle.y += particle.vy;
-      
+
       // 添加重力效果
       particle.vy += 0.1;
-      
+
       // 更新粒子生命周期
       particle.life -= particle.decay;
-      
+
       // 如果粒子生命周期结束，从数组中移除
       if (particle.life <= 0) {
         this.particles.splice(i, 1);
         continue;
       }
-      
+
       // 绘制粒子辉光效果
       this.ctx.save();
-      
+
       // 创建径向渐变，实现从中心到边缘的透明度变化
       const gradient = this.ctx.createRadialGradient(
         particle.x, particle.y, 0,
         particle.x, particle.y, particle.size * 1.5
       );
-      
+
       const brightColor = this.getBrightenedColor(particle.color, 30);
-      
+
       gradient.addColorStop(0, brightColor + 'FF');
       gradient.addColorStop(0.5, brightColor + '80');
       gradient.addColorStop(1, brightColor + '00');
-      
+
       // 绘制辉光
       this.ctx.fillStyle = gradient;
       this.ctx.globalAlpha = particle.life;
       this.ctx.beginPath();
       this.ctx.arc(particle.x, particle.y, particle.size * 1.5, 0, Math.PI * 2);
       this.ctx.fill();
-      
+
       // 绘制粒子主体
       this.ctx.globalAlpha = particle.life;
       this.ctx.fillStyle = particle.color;
       this.ctx.beginPath();
       this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
       this.ctx.fill();
-      
+
       this.ctx.restore();
     }
-    
+
     // 继续动画循环
     this.animationId = requestAnimationFrame(() => this.animate());
   }
-  
+
   getRandomColor() {
     const colors = [
       '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
@@ -224,36 +223,36 @@ class FireworksEffect {
     ];
     return colors[Math.floor(Math.random() * colors.length)];
   }
-  
+
   getBrightenedColor(color, percent) {
     color = color.replace('#', '');
-    
+
     let r = parseInt(color.substring(0, 2), 16);
     let g = parseInt(color.substring(2, 4), 16);
     let b = parseInt(color.substring(4, 6), 16);
-    
+
     r = Math.min(255, Math.round(r * (1 + percent / 100)));
     g = Math.min(255, Math.round(g * (1 + percent / 100)));
     b = Math.min(255, Math.round(b * (1 + percent / 100)));
-    
+
     const toHex = (n) => {
       const hex = n.toString(16);
       return hex.length === 1 ? '0' + hex : hex;
     };
-    
+
     return '#' + toHex(r) + toHex(g) + toHex(b);
   }
-  
+
   // 销毁烟花效果
   destroy() {
     this.stopAutoFireworks();
-    
+
     // 停止动画循环
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
     }
-    
+
     // 移除事件监听器
     if (this.clickHandler) {
       document.removeEventListener('click', this.clickHandler);
@@ -264,14 +263,14 @@ class FireworksEffect {
     if (this.resizeHandler) {
       window.removeEventListener('resize', this.resizeHandler);
     }
-    
+
     // 移除Canvas元素
     if (this.canvas) {
       this.canvas.remove();
       this.canvas = null;
       this.ctx = null;
     }
-    
+
     // 清空粒子数组
     this.particles = [];
   }

@@ -603,12 +603,14 @@ input[type="color"] {
   z-index: 5;
 }
 
-/* 默认隐藏编辑UI */
+
+/* 默认隐藏编辑UI，但允许JavaScript控制显示 */
 #left-sidebar,
-.bottom-left-panel,
-#top-right-controls {
-  display: none !important;
+.bottom-left-panel {
+  display: block;
 }
+
+
 
 /* 隐藏摄像头预览  */
 #webcam-wrapper {

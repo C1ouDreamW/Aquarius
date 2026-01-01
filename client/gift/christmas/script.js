@@ -6,7 +6,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
 
-// Clean Database Name
+// 数据库名称
 const DB_NAME = "GrandTreeDB_v17_Clean";
 const EXPORTED_DATA = null;
 
@@ -44,7 +44,6 @@ async function init() {
   }
 
   initThree(); setupEnvironment(); setupLights(); createTextures(); createParticles(); createDust(); createSnow();
-  // createDefaultPhotos();
   createCenterText();
   setupPostProcessing(); setupEvents(); animate();
 
@@ -68,8 +67,44 @@ async function init() {
   setMode('TREE');
 }
 
-function initDraggableTitle() { const t = document.getElementById('title-container'); let d = false, o = { x: 0, y: 0 }; t.onmousedown = e => { d = true; const r = t.getBoundingClientRect(); o.x = e.clientX - r.left; o.y = e.clientY - r.top; t.style.transform = 'none'; t.style.left = r.left + 'px'; t.style.top = r.top + 'px' }; window.onmousemove = e => { if (d) { t.style.left = (e.clientX - o.x) + 'px'; t.style.top = (e.clientY - o.y) + 'px' } }; window.onmouseup = () => d = false; }
-window.toggleUI = () => { STATE.uiVisible = !STATE.uiVisible; document.getElementById('left-sidebar').classList.toggle('panel-hidden', !STATE.uiVisible); document.querySelector('.bottom-left-panel').classList.toggle('panel-hidden', !STATE.uiVisible); };
+// 初始化标题拖拽功能
+function initDraggableTitle() {
+  const titleElement = document.getElementById('title-container');
+  let isDragging = false;
+  let offset = { x: 0, y: 0 };
+
+  // 鼠标按下事件：开始拖拽
+  titleElement.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    const rect = titleElement.getBoundingClientRect();
+    offset.x = e.clientX - rect.left;
+    offset.y = e.clientY - rect.top;
+
+    // 重置transform，切换到绝对定位
+    titleElement.style.transform = 'none';
+    titleElement.style.left = rect.left + 'px';
+    titleElement.style.top = rect.top + 'px';
+  });
+
+  // 鼠标移动事件：更新位置
+  window.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      titleElement.style.left = (e.clientX - offset.x) + 'px';
+      titleElement.style.top = (e.clientY - offset.y) + 'px';
+    }
+  });
+
+  // 鼠标释放事件：结束拖拽
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+}
+window.toggleUI = () => {
+  STATE.uiVisible = !STATE.uiVisible;
+  document.getElementById('left-sidebar').classList.toggle('panel-hidden', !STATE.uiVisible);
+  document.getElementById('top-right-controls').classList.toggle('panel-hidden', !STATE.uiVisible);
+  document.querySelector('.bottom-left-panel').classList.toggle('panel-hidden', !STATE.uiVisible);
+};
 window.toggleCameraDisplay = () => { STATE.cameraVisible = !STATE.cameraVisible; document.getElementById('webcam-wrapper').classList.toggle('camera-hidden', !STATE.cameraVisible); };
 window.toggleFullScreen = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); };
 function loadTextConfig() {
@@ -98,21 +133,12 @@ function updatePlayBtnUI(p) { document.getElementById('play-btn').innerText = p 
 
 window.updateRotationSpeed = (v) => { CONFIG.interaction.rotationSpeed = parseFloat(v); };
 
-// window.setMode = function (mode) {
-//   STATE.mode = mode;
-//   STATE.focusTarget = null;
-//   const hint = document.getElementById('gesture-hint');
-//   if (mode === 'TREE') hint.innerText = "状态: 聚合 (圣诞树)";
-//   else if (mode === 'SCATTER') hint.innerText = "状态: 散开 (星云)";
-//   else if (mode === 'FOCUS') hint.innerText = "状态: 抓取照片";
-// }
 
 window.setMode = function (mode) {
   STATE.mode = mode;
   STATE.focusTarget = null;
 
   const hint = document.getElementById('gesture-hint');
-  // === 新增：获取文字元素 ===
   const centerMsg = document.getElementById('center-message');
 
   if (mode === 'TREE') {
@@ -158,46 +184,7 @@ window.startRotate = (d) => { if (d === 'up') manualRotateState.x = -1; if (d ==
 window.stopRotate = () => { manualRotateState = { x: 0, y: 0 }; };
 window.resetRotation = () => { STATE.rotation = { x: 0, y: 0 }; if (STATE.mode !== 'TREE') setMode('TREE'); };
 
-window.setupEvents = function () {
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    composer.setSize(window.innerWidth, window.innerHeight);
-  });
 
-  document.getElementById('file-input').addEventListener('change', (e) => {
-    const files = e.target.files; if (!files.length) return;
-    Array.from(files).forEach(f => {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const base64 = ev.target.result;
-        const id = savePhotoToDB(base64);
-        createPhotoTexture(base64, id);
-      }
-      reader.readAsDataURL(f);
-    });
-  });
-  document.getElementById('music-input').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      saveMusicToDB(file);
-      bgmAudio.src = URL.createObjectURL(file);
-      bgmAudio.play().then(() => { isMusicPlaying = true; updatePlayBtnUI(true); }).catch(console.error);
-    }
-  });
-
-  // 添加点击事件处理，实现点击圣诞树切换模式
-  const canvasContainer = document.getElementById('canvas-container');
-  canvasContainer.addEventListener('click', () => {
-    if (STATE.mode === 'TREE') {
-      setMode('SCATTER');
-    } else if (STATE.mode === 'SCATTER') {
-      setMode('TREE');
-    }
-  });
-
-}
 
 
 function initThree() { const c = document.getElementById('canvas-container'); scene = new THREE.Scene(); scene.background = new THREE.Color(CONFIG.colors.bg); scene.fog = new THREE.FogExp2(CONFIG.colors.bg, 0.01); camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(0, 2, CONFIG.camera.z); renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" }); renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); renderer.toneMapping = THREE.ReinhardToneMapping; renderer.toneMappingExposure = 2.2; c.appendChild(renderer.domElement); mainGroup = new THREE.Group(); scene.add(mainGroup); }
@@ -236,7 +223,7 @@ class Particle {
 }
 
 function createParticles() {
-  // 1. 定义几何体
+  // 定义几何体
   const sg = new THREE.SphereGeometry(0.5, 32, 32);
   const bg = new THREE.BoxGeometry(0.55, 0.55, 0.55);
   // 拐杖糖形状
@@ -248,8 +235,7 @@ function createParticles() {
   ]);
   const cg = new THREE.TubeGeometry(c, 16, 0.08, 8, false);
 
-  // 2. 定义材质 (关键修改：开启 transparent 并加入 envMaterials 列表)
-
+  // 定义材质
   // 金色材质
   const gm = new THREE.MeshStandardMaterial({
     color: CONFIG.colors.champagneGold,
@@ -258,9 +244,8 @@ function createParticles() {
     envMapIntensity: 2,
     emissive: 0x443300,
     emissiveIntensity: 0.3,
-    transparent: true // <--- 关键修改：开启透明
+    transparent: true
   });
-
   // 绿色材质
   const grm = new THREE.MeshStandardMaterial({
     color: CONFIG.colors.deepGreen,
@@ -268,9 +253,8 @@ function createParticles() {
     roughness: 0.8,
     emissive: 0x002200,
     emissiveIntensity: 0.2,
-    transparent: true // <--- 关键修改
+    transparent: true
   });
-
   // 红色材质
   const rm = new THREE.MeshPhysicalMaterial({
     color: CONFIG.colors.accentRed,
@@ -278,21 +262,18 @@ function createParticles() {
     roughness: 0.2,
     clearcoat: 1,
     emissive: 0x330000,
-    transparent: true // <--- 关键修改
+    transparent: true
   });
-
   // 拐杖糖材质
   const cm = new THREE.MeshStandardMaterial({
     map: caneTexture,
     roughness: 0.4,
-    transparent: true // <--- 关键修改
+    transparent: true
   });
 
-  // === 关键步骤：将材质加入全局列表 ===
-  // 这样 animate 函数里的逻辑才能控制它们变淡
   envMaterials.push(gm, grm, rm, cm);
 
-  // 3. 生成粒子 Mesh (原有逻辑)
+  // 生成粒子Mesh
   for (let i = 0; i < CONFIG.particles.count; i++) {
     const r = Math.random();
     let m, t;
@@ -309,19 +290,20 @@ function createParticles() {
     particleSystem.push(new Particle(m, t, false));
   }
 
-  // 4. 树顶星星 (顺便也加上透明控制，保证整体一致)
+  // 树顶星星
   const starMat = new THREE.MeshStandardMaterial({
     color: 0xffdd88,
     emissive: 0xffaa00,
     emissiveIntensity: 1,
     metalness: 1,
     roughness: 0,
-    transparent: true // <--- 关键修改
+    transparent: true
   });
-  envMaterials.push(starMat); // 加入控制列表
+  envMaterials.push(starMat);
 
   const st = new THREE.Mesh(new THREE.OctahedronGeometry(1.2, 0), starMat);
   st.position.set(0, CONFIG.particles.treeHeight / 2 + 1.2, 0);
+  st.name = "treeTopStar";
   mainGroup.add(st);
 
   mainGroup.add(photoMeshGroup);
@@ -343,7 +325,6 @@ function createDust() {
     particleSystem.push(new Particle(mesh, 'DUST', true));
   }
 }
-function createDefaultPhotos() { const c = document.createElement('canvas'); c.width = 512; c.height = 512; const x = c.getContext('2d'); x.fillStyle = '#050505'; x.fillRect(0, 0, 512, 512); x.strokeStyle = '#eebb66'; x.lineWidth = 15; x.strokeRect(20, 20, 472, 472); x.font = '500 60px Times New Roman'; x.fillStyle = '#eebb66'; x.textAlign = 'center'; x.fillText("JOYEUX", 256, 230); x.fillText("NOEL", 256, 300); createPhotoTexture(c.toDataURL(), 'default'); }
 function createCenterText() {
   textGroup = new THREE.Group();
 
@@ -368,16 +349,16 @@ function createCenterText() {
   ctx.fillText(line1, 512, 180);
 
   ctx.font = "italic 150px 'Times New Roman', serif";
-  ctx.strokeStyle = "rgba(0, 0, 0, 0.3)"; // 轻微的黑色描边
+  ctx.strokeStyle = "rgba(0, 0, 0, 0.3)";
   ctx.lineWidth = 8;
   ctx.strokeText(line2, 512, 340);
 
   ctx.fillStyle = "#ffffff";
   ctx.fillText(line2, 512, 340);
 
-  ctx.shadowColor = "rgba(255, 200, 50, 0.8)"; // 金色发光
+  ctx.shadowColor = "rgba(255, 200, 50, 0.8)";
   ctx.shadowBlur = 30;
-  ctx.fillText(line2, 512, 340); // 重叠画一次产生光晕
+  ctx.fillText(line2, 512, 340);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -387,7 +368,6 @@ function createCenterText() {
     transparent: true,
     opacity: 0,
     depthWrite: false,
-    // blending: THREE.AdditiveBlending
   });
 
   textSprite = new THREE.Sprite(mat);
@@ -398,8 +378,8 @@ function createCenterText() {
   const geo = new THREE.BufferGeometry();
   const pos = [];
   const colors = [];
-  const color1 = new THREE.Color(0xffd700); // 金色
-  const color2 = new THREE.Color(0xffffff); // 白色点缀
+  const color1 = new THREE.Color(0xffd700);
+  const color2 = new THREE.Color(0xffffff);
 
   for (let i = 0; i < 120; i++) {
     const r = 6.5 + Math.random() * 4;
@@ -421,13 +401,13 @@ function createCenterText() {
   geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
   const starMat = new THREE.PointsMaterial({
-    vertexColors: true, // 启用顶点颜色
-    size: 0.2,          // 稍微大一点点
+    vertexColors: true,
+    size: 0.2,
     transparent: true,
     opacity: 0,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
-    map: getDiscTexture() // 使用圆形纹理，让粒子更圆润
+    map: getDiscTexture()
   });
 
   const auraStars = new THREE.Points(geo, starMat);
@@ -463,14 +443,48 @@ let lvt = -1; async function predictWebcam() { if (videoElement && videoElement.
 function processGestures(r) { if (r.landmarks && r.landmarks.length > 0) { STATE.hand.detected = true; const lm = r.landmarks[0]; STATE.hand.x = (lm[9].x - 0.5) * 2; STATE.hand.y = (lm[9].y - 0.5) * 2; const thumb = lm[4], index = lm[8], wrist = lm[0], middle = lm[12]; const pd = Math.hypot(thumb.x - index.x, thumb.y - index.y); const od = Math.hypot(middle.x - wrist.x, middle.y - wrist.y); if (STATE.mode === 'FOCUS') { if (pd > 0.1) setMode('SCATTER'); return; } if (pd < 0.05 && STATE.mode !== 'FOCUS') triggerPhotoGrab(); else if (od > 0.4) setMode('SCATTER'); else if (od < 0.2) setMode('TREE'); } else STATE.hand.detected = false; }
 
 window.setupEvents = () => {
-  window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight) });
-  document.getElementById('file-input').addEventListener('change', e => { Array.from(e.target.files).forEach(f => { const r = new FileReader(); r.onload = ev => { const i = new Image(); i.src = ev.target.result; i.onload = () => { const id = savePhotoToDB(ev.target.result); createPhotoTexture(ev.target.result, id) } }; r.readAsDataURL(f) }) });
-  document.getElementById('music-input').addEventListener('change', e => { const f = e.target.files[0]; if (f) { saveMusicToDB(f); bgmAudio.src = URL.createObjectURL(f); bgmAudio.play().then(() => { isMusicPlaying = true; updatePlayBtnUI(true) }).catch(console.error) } });
+  // 窗口大小调整事件
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+  });
 
-  // 点击事件处理 - 点击圣诞树场景时触发功能
+  // 照片上传事件
+  document.getElementById('file-input').addEventListener('change', (e) => {
+    const files = e.target.files;
+    if (!files.length) return;
+
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target.result;
+        const id = savePhotoToDB(base64);
+        createPhotoTexture(base64, id);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // 音乐上传事件
+  document.getElementById('music-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      saveMusicToDB(file);
+      bgmAudio.src = URL.createObjectURL(file);
+      bgmAudio.play()
+        .then(() => {
+          isMusicPlaying = true;
+          updatePlayBtnUI(true);
+        })
+        .catch(console.error);
+    }
+  });
+
+  // 点击场景切换模式事件
   const canvasContainer = document.getElementById('canvas-container');
   canvasContainer.addEventListener('click', () => {
-    // 根据当前模式切换状态
     if (STATE.mode === 'TREE') {
       setMode('SCATTER');
     } else {
@@ -478,25 +492,58 @@ window.setupEvents = () => {
     }
   });
 
-  // 键盘交互
+  // 键盘按键按下事件
   window.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
     const code = e.code;
-    const k = e.key.toLowerCase();
+    const key = e.key.toLowerCase();
 
-    if (k === 'h') window.toggleUI();
-    if (code === 'Space') { e.preventDefault(); setMode('TREE'); }
-    if (k === 'z') setMode('SCATTER');
-    if (k === 'x') triggerPhotoGrab();
+    switch (key) {
+      case 'h':
+        window.toggleUI();
+        break;
+      case 'z':
+        setMode('SCATTER');
+        break;
+      case 'x':
+        triggerPhotoGrab();
+        break;
+    }
 
-    if (code === 'ArrowUp') manualRotateState.x = -1;
-    if (code === 'ArrowDown') manualRotateState.x = 1;
-    if (code === 'ArrowLeft') manualRotateState.y = -1;
-    if (code === 'ArrowRight') manualRotateState.y = 1;
+    // 空格键特殊处理
+    if (code === 'Space') {
+      e.preventDefault();
+      if (STATE.mode === 'TREE') {
+        setMode('SCATTER');
+      } else {
+        setMode('TREE');
+      }
+    }
+
+    // 方向键控制旋转
+    switch (code) {
+      case 'ArrowUp':
+        manualRotateState.x = -1;
+        break;
+      case 'ArrowDown':
+        manualRotateState.x = 1;
+        break;
+      case 'ArrowLeft':
+        manualRotateState.y = -1;
+        break;
+      case 'ArrowRight':
+        manualRotateState.y = 1;
+        break;
+    }
   });
+
+  // 键盘按键释放事件
   window.addEventListener('keyup', (e) => {
     const code = e.code;
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(code)) manualRotateState = { x: 0, y: 0 };
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(code)) {
+      manualRotateState = { x: 0, y: 0 };
+    }
   });
 }
 window.openDeleteManager = async () => { document.getElementById('delete-manager').classList.remove('hidden'); const g = document.getElementById('photo-grid'); g.innerHTML = ''; const ps = await loadPhotosFromDB(); if (!ps || ps.length === 0) g.innerHTML = '<div style="color:#888;">暂无照片</div>'; else ps.forEach(p => { const d = document.createElement('div'); d.className = 'photo-item'; const i = document.createElement('img'); i.className = 'photo-thumb'; i.src = p.data; const b = document.createElement('div'); b.className = 'delete-x'; b.innerText = 'X'; b.onclick = e => { e.stopPropagation(); confirmDelete(p.id, d) }; d.appendChild(i); d.appendChild(b); g.appendChild(d) }) }
@@ -504,52 +551,112 @@ window.confirmDelete = (id, el) => { deletePhotoFromDB(id); el.remove(); const p
 window.clearAllPhotos = () => { if (confirm("确定要清空所有照片吗？")) { clearPhotosDB(); particleSystem.filter(p => p.type === 'PHOTO').forEach(p => photoMeshGroup.remove(p.mesh)); particleSystem = particleSystem.filter(p => p.type !== 'PHOTO'); window.openDeleteManager() } }
 window.closeDeleteManager = () => { document.getElementById('delete-manager').classList.add('hidden') }
 
-function animate() {
-  requestAnimationFrame(animate); const dt = clock.getDelta(); const et = clock.getElapsedTime();
+// 更新雪花动画
+function updateSnow(dt, et) {
   if (snowInstancedMesh && STATE.mode === 'TREE') {
     snowInstancedMesh.visible = true;
     for (let i = 0; i < CONFIG.snow.count; i++) {
-      snowInstancedMesh.getMatrixAt(i, snowDummy.matrix); snowDummy.matrix.decompose(snowDummy.position, snowDummy.quaternion, snowDummy.scale); const d = snowData[i];
-      snowDummy.position.y -= d.vy * CONFIG.snow.speed * dt; snowDummy.position.x += Math.sin(et * 0.5 + i) * 2.5 * dt; snowDummy.position.z += Math.cos(et * 0.3 + i) * 1.5 * dt;
-      snowDummy.rotation.x += d.rx * dt; snowDummy.rotation.y += d.ry * dt; snowDummy.rotation.z += d.rz * dt;
-      if (snowDummy.position.y < -25) { snowDummy.position.y = 40; snowDummy.position.x = (Math.random() - 0.5) * CONFIG.snow.range; snowDummy.position.z = (Math.random() - 0.5) * CONFIG.snow.range; }
-      snowDummy.updateMatrix(); snowInstancedMesh.setMatrixAt(i, snowDummy.matrix);
-    } snowInstancedMesh.instanceMatrix.needsUpdate = true;
-  } else if (snowInstancedMesh) snowInstancedMesh.visible = false;
+      snowInstancedMesh.getMatrixAt(i, snowDummy.matrix);
+      snowDummy.matrix.decompose(snowDummy.position, snowDummy.quaternion, snowDummy.scale);
+      const snowParams = snowData[i];
 
-  if (manualRotateState.x !== 0 || manualRotateState.y !== 0) { const s = CONFIG.interaction.rotationSpeed * 2.0; STATE.rotation.x += manualRotateState.x * s * dt; STATE.rotation.y += manualRotateState.y * s * dt; }
-  else if (STATE.mode === 'SCATTER' && STATE.hand.detected) { const th = 0.3, s = CONFIG.interaction.rotationSpeed; if (STATE.hand.x > th) STATE.rotation.y -= s * dt * (STATE.hand.x - th); else if (STATE.hand.x < -th) STATE.rotation.y -= s * dt * (STATE.hand.x + th); if (STATE.hand.y < -th) STATE.rotation.x += s * dt * (-STATE.hand.y - th); else if (STATE.hand.y > th) STATE.rotation.x -= s * dt * (STATE.hand.y - th); }
-  else { if (STATE.mode === 'TREE') { STATE.rotation.y += 0.3 * dt; STATE.rotation.x += (0 - STATE.rotation.x) * 2.0 * dt; } else STATE.rotation.y += 0.1 * dt; }
+      // 更新雪花位置
+      snowDummy.position.y -= snowParams.vy * CONFIG.snow.speed * dt;
+      snowDummy.position.x += Math.sin(et * 0.5 + i) * 2.5 * dt;
+      snowDummy.position.z += Math.cos(et * 0.3 + i) * 1.5 * dt;
 
-  mainGroup.rotation.y = STATE.rotation.y; mainGroup.rotation.x = STATE.rotation.x;
-  particleSystem.forEach(p => p.update(dt, STATE.mode, STATE.focusTarget));
+      // 更新雪花旋转
+      snowDummy.rotation.x += snowParams.rx * dt;
+      snowDummy.rotation.y += snowParams.ry * dt;
+      snowDummy.rotation.z += snowParams.rz * dt;
 
+      // 重置雪花位置（当雪花掉落到底部时）
+      if (snowDummy.position.y < -25) {
+        snowDummy.position.y = 40;
+        snowDummy.position.x = (Math.random() - 0.5) * CONFIG.snow.range;
+        snowDummy.position.z = (Math.random() - 0.5) * CONFIG.snow.range;
+      }
+
+      snowDummy.updateMatrix();
+      snowInstancedMesh.setMatrixAt(i, snowDummy.matrix);
+    }
+    snowInstancedMesh.instanceMatrix.needsUpdate = true;
+  } else if (snowInstancedMesh) {
+    snowInstancedMesh.visible = false;
+  }
+}
+
+// 更新旋转逻辑
+function updateRotation(dt) {
+  if (manualRotateState.x !== 0 || manualRotateState.y !== 0) {
+    // 手动旋转控制
+    const speed = CONFIG.interaction.rotationSpeed * 2.0;
+    STATE.rotation.x += manualRotateState.x * speed * dt;
+    STATE.rotation.y += manualRotateState.y * speed * dt;
+  } else if (STATE.mode === 'SCATTER' && STATE.hand.detected) {
+    // 手势旋转控制
+    const threshold = 0.3;
+    const speed = CONFIG.interaction.rotationSpeed;
+
+    if (STATE.hand.x > threshold) {
+      STATE.rotation.y -= speed * dt * (STATE.hand.x - threshold);
+    } else if (STATE.hand.x < -threshold) {
+      STATE.rotation.y -= speed * dt * (STATE.hand.x + threshold);
+    }
+
+    if (STATE.hand.y < -threshold) {
+      STATE.rotation.x += speed * dt * (-STATE.hand.y - threshold);
+    } else if (STATE.hand.y > threshold) {
+      STATE.rotation.x -= speed * dt * (STATE.hand.y - threshold);
+    }
+  } else {
+    // 自动旋转控制
+    if (STATE.mode === 'TREE') {
+      STATE.rotation.y += 0.3 * dt;
+      STATE.rotation.x += (0 - STATE.rotation.x) * 2.0 * dt;
+    } else {
+      STATE.rotation.y += 0.1 * dt;
+    }
+  }
+
+  // 应用旋转到主群组
+  mainGroup.rotation.y = STATE.rotation.y;
+  mainGroup.rotation.x = STATE.rotation.x;
+}
+
+// 更新文字和光环效果
+function updateTextEffects(dt) {
   const titleEl = document.getElementById('title-container');
   if (textGroup && textSprite) {
     const aura = textGroup.getObjectByName("aura");
 
     if (STATE.mode === 'SCATTER' || STATE.mode === 'FOCUS') {
-
+      // 散开或聚焦模式：显示文字和光环
       textSprite.material.opacity = THREE.MathUtils.lerp(textSprite.material.opacity, 1, dt * 1.5);
+
       if (aura) {
         aura.material.opacity = THREE.MathUtils.lerp(aura.material.opacity, 0.8, dt * 1.5);
         aura.rotation.y -= dt * 0.1; // 光环旋转
       }
+
       // 文字呼吸动画
-      const s = 12 + Math.sin(clock.elapsedTime * 2) * 0.2;
-      textSprite.scale.set(s, s * 0.5, 1);
+      const scale = 12 + Math.sin(clock.elapsedTime * 2) * 0.2;
+      textSprite.scale.set(scale, scale * 0.5, 1);
+
       if (titleEl) {
-        // 获取当前透明度，默认为1
         let currOp = titleEl.style.opacity === '' ? 1 : parseFloat(titleEl.style.opacity);
         titleEl.style.opacity = THREE.MathUtils.lerp(currOp, 0, dt * 3.0);
-        if (currOp < 0.1) titleEl.style.pointerEvents = 'none';
+        if (currOp < 0.1) {
+          titleEl.style.pointerEvents = 'none';
+        }
+      }
+    } else {
+      textSprite.material.opacity = THREE.MathUtils.lerp(textSprite.material.opacity, 0, dt * 4.0);
+
+      if (aura) {
+        aura.material.opacity = THREE.MathUtils.lerp(aura.material.opacity, 0, dt * 4.0);
       }
 
-    }
-    else {
-
-      textSprite.material.opacity = THREE.MathUtils.lerp(textSprite.material.opacity, 0, dt * 4.0);
-      if (aura) aura.material.opacity = THREE.MathUtils.lerp(aura.material.opacity, 0, dt * 4.0);
       if (titleEl) {
         let currOp = titleEl.style.opacity === '' ? 1 : parseFloat(titleEl.style.opacity);
         titleEl.style.opacity = THREE.MathUtils.lerp(currOp, 1, dt * 2.0);
@@ -557,6 +664,10 @@ function animate() {
       }
     }
   }
+}
+
+// 更新环境材质透明度
+function updateEnvMaterials(dt) {
   const targetEnvOpacity = (STATE.mode === 'SCATTER' || STATE.mode === 'FOCUS') ? 0.15 : 1.0;
 
   envMaterials.forEach(mat => {
@@ -564,6 +675,33 @@ function animate() {
       mat.opacity = THREE.MathUtils.lerp(mat.opacity, targetEnvOpacity, dt * 2.0);
     }
   });
+}
+
+// 主动画循环
+function animate() {
+  requestAnimationFrame(animate);
+
+  const dt = clock.getDelta();
+  const et = clock.elapsedTime;
+
+  // 调用各辅助函数
+  updateSnow(dt, et);
+  updateRotation(dt);
+  particleSystem.forEach(p => p.update(dt, STATE.mode, STATE.focusTarget));
+  updateTextEffects(dt);
+  updateEnvMaterials(dt);
+
+  // 控制树顶星星透明度
+  const treeTopStar = mainGroup.getObjectByName("treeTopStar");
+  if (treeTopStar) {
+    if (STATE.mode === 'SCATTER' || STATE.mode === 'FOCUS') {
+      treeTopStar.material.opacity = THREE.MathUtils.lerp(treeTopStar.material.opacity, 0, dt * 3.0);
+    } else {
+      treeTopStar.material.opacity = THREE.MathUtils.lerp(treeTopStar.material.opacity, 1, dt * 2.0);
+    }
+  }
+
+  // 渲染场景
   composer.render();
 }
 init();
