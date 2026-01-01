@@ -709,6 +709,16 @@ header p {
     height: 320px;
   }
 
+  .sector span {
+    font-size: 12px;
+    width: 220px;
+    transform: skewY(30deg) rotate(30deg) translate(0px, 30px);
+  }
+
+  .sector:nth-child(4) span {
+    font-size: 14px;
+  }
+
   .btn-spin {
     padding: 12px 40px;
     font-size: 1.2rem;
@@ -724,6 +734,17 @@ header p {
   .wheel-wrapper {
     width: 280px;
     height: 280px;
+  }
+
+  /* 进一步调整小屏幕扇形文字大小 */
+  .sector span {
+    font-size: 10px;
+    width: 180px;
+    transform: skewY(30deg) rotate(30deg) translate(0px, 20px);
+  }
+
+  .sector:nth-child(4) span {
+    font-size: 12px;
   }
 
   .modal-content {
