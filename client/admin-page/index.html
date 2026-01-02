@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数据库可视化管理系统</title>
+    <title>后台管理系统</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <!-- 登录页面 -->
         <div id="login-page" class="page active">
             <div class="login-container">
-                <h1>数据库可视化管理系统</h1>
+                <h1>后台管理系统</h1>
                 <form id="login-form">
                     <div class="form-group">
                         <label for="username">用户名</label>
@@ -32,13 +34,13 @@
         <!-- 主页面 -->
         <div id="main-page" class="page">
             <header class="header">
-                <h1>数据库可视化管理系统</h1>
+                <h1>后台管理系统</h1>
                 <div class="user-info">
                     <span id="current-user"></span>
                     <button id="logout-btn" class="btn btn-secondary">退出登录</button>
                 </div>
             </header>
-            
+
             <nav class="nav">
                 <ul>
                     <li><a href="#" class="nav-item active" data-section="dashboard">数据概览</a></li>
@@ -46,7 +48,7 @@
                     <li><a href="#" class="nav-item" data-section="settings">设置</a></li>
                 </ul>
             </nav>
-            
+
             <main class="main-content">
                 <!-- 数据概览 -->
                 <section id="dashboard" class="content-section active">
@@ -104,4 +106,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
