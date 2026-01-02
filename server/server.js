@@ -7,6 +7,8 @@ const port = 3000;
 const cors = require('cors')
 const route_connect = require('./src/routes/connect-me');
 const route_shuashua = require('./src/routes/shuashua');
+const route_auth = require('./src/routes/auth'); // 导入认证路由
+const authenticateToken = require('./src/middleware/auth'); // 导入认证中间件
 const MongoURI = process.env.MongoURI;
 
 async function connectMongoDB() {
@@ -43,10 +45,14 @@ app.get('/api/test-connect', (req, res) => {
   })
 })
 
+// 认证路由
+app.use('/api/auth', route_auth);
+
 // connect路由
-app.use('/api', route_connect);
+app.use('/api', authenticateToken, route_connect);
+
 // shuashuashua路由
-app.use('/api/shuashua', route_shuashua);
+app.use('/api/shuashua', authenticateToken, route_shuashua);
 
 connectMongoDB();
 app.listen(port, () => { console.log("服务器已启动！访问：http://localhost:3000") });

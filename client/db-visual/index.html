@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据库可视化管理系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 登录页面 -->
+        <div id="login-page" class="page active">
+            <div class="login-container">
+                <h1>数据库可视化管理系统</h1>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">登录</button>
+                    </div>
+                    <div id="login-message" class="message"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 主页面 -->
+        <div id="main-page" class="page">
+            <header class="header">
+                <h1>数据库可视化管理系统</h1>
+                <div class="user-info">
+                    <span id="current-user"></span>
+                    <button id="logout-btn" class="btn btn-secondary">退出登录</button>
+                </div>
+            </header>
+            
+            <nav class="nav">
+                <ul>
+                    <li><a href="#" class="nav-item active" data-section="dashboard">数据概览</a></li>
+                    <li><a href="#" class="nav-item" data-section="data-list">数据列表</a></li>
+                    <li><a href="#" class="nav-item" data-section="settings">设置</a></li>
+                </ul>
+            </nav>
+            
+            <main class="main-content">
+                <!-- 数据概览 -->
+                <section id="dashboard" class="content-section active">
+                    <h2>数据概览</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>总记录数</h3>
+                            <div id="total-records" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>今日新增</h3>
+                            <div id="today-records" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>最近7天</h3>
+                            <div id="week-records" class="stat-value">0</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 数据列表 -->
+                <section id="data-list" class="content-section">
+                    <h2>数据列表</h2>
+                    <div class="search-bar">
+                        <input type="text" id="search-input" placeholder="搜索名称或邮箱...">
+                        <button id="search-btn" class="btn btn-primary">搜索</button>
+                        <button id="refresh-btn" class="btn btn-secondary">刷新</button>
+                    </div>
+                    <table id="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>名称</th>
+                                <th>邮箱</th>
+                                <th>留言</th>
+                                <th>日期</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-table-body">
+                            <!-- 数据将通过JS动态添加 -->
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- 设置 -->
+                <section id="settings" class="content-section">
+                    <h2>设置</h2>
+                    <div class="settings-container">
+                        <p>系统设置功能开发中...</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
