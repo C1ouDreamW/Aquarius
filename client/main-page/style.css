@@ -327,6 +327,11 @@ header p {
   transition: transform 0.3s ease;
 }
 
+.admin-btn {
+  right: 80px;
+  /* 位于主题按钮左侧 */
+}
+
 .theme-toggle:hover {
   transform: scale(1.2) rotate(15deg);
 }

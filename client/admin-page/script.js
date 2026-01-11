@@ -139,7 +139,7 @@ function showMessage(message, type) {
 
     // 3秒后隐藏消息
     setTimeout(() => {
-        loginMessage.textContent = '';
+        loginMessage.textContent = '...';
         loginMessage.className = 'message';
     }, 3000);
 }
@@ -149,7 +149,7 @@ function showLoginPage() {
     loginPage.classList.add('active');
     mainPage.classList.remove('active');
     loginForm.reset();
-    loginMessage.textContent = '';
+    loginMessage.textContent = '...';
     loginMessage.className = 'message';
 }
 
