@@ -63,8 +63,27 @@ async function init() {
 
   initMediaPipe();
   initDraggableTitle();
+  initNavigationButtons();
 
   setMode('TREE');
+}
+
+function initNavigationButtons() {
+  // 返回主页按钮
+  const backHomeBtn = document.getElementById('backHomeBtn');
+  if (backHomeBtn) {
+    backHomeBtn.addEventListener('click', () => {
+      window.location.href = '../../main-page/index.html';
+    });
+  }
+
+  // 返回上一级按钮
+  const backPrevBtn = document.getElementById('backPrevBtn');
+  if (backPrevBtn) {
+    backPrevBtn.addEventListener('click', () => {
+      window.location.href = '../index.html';
+    });
+  }
 }
 
 // 初始化标题拖拽功能

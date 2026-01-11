@@ -5,6 +5,47 @@ body {
   font-family: 'Microsoft YaHei', 'Songti SC', serif;
 }
 
+.back-home-btn,
+.back-prev-btn {
+  position: fixed;
+  top: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.back-home-btn:hover,
+.back-prev-btn:hover {
+  background: rgba(212, 175, 55, 0.2);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.back-home-btn svg,
+.back-prev-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.back-home-btn {
+  left: 20px;
+}
+
+.back-prev-btn {
+  left: 70px;
+}
+
 #canvas-container {
   width: 100vw;
   height: 100vh;
