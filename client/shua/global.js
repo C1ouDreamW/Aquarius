@@ -4,11 +4,27 @@ const API_BASE = '/api/shuashua';
 // 封装 Fetch 请求
 async function request(endpoint, options = {}) {
   try {
+    // 检查是否为公开接口（不需要认证）
+    const publicEndpoints = ['/categories', '/questions'];
+    const isPublic = publicEndpoints.some(publicEndpoint =>
+      endpoint === publicEndpoint || endpoint.startsWith(publicEndpoint + '/')
+    );
+
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers
+    };
+
+    // 只有非公开接口才需要认证 token
+    if (!isPublic) {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+
     const res = await fetch(`${API_BASE}${endpoint}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-      },
+      headers,
       ...options
     });
 

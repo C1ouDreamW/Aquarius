@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
+const authenticateToken = require('../middleware/auth');
 
 // 初始化 Supabase
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -55,25 +56,25 @@ router.post('/login', async (req, res) => {
 });
 
 // 创建类别
-router.post('/categories', async (req, res) => {
+router.post('/categories', authenticateToken, async (req, res) => {
   const result = await supabase.from('categories').insert([req.body]).select();
   handleResponse(res, result);
 });
 
 // 删除类别
-router.delete('/categories/:id', async (req, res) => {
+router.delete('/categories/:id', authenticateToken, async (req, res) => {
   const result = await supabase.from('categories').delete().eq('id', req.params.id);
   handleResponse(res, result);
 });
 
 // 创建题目
-router.post('/questions', async (req, res) => {
+router.post('/questions', authenticateToken, async (req, res) => {
   const result = await supabase.from('questions').insert([req.body]).select();
   handleResponse(res, result);
 });
 
 // 删除题目
-router.delete('/questions/:id', async (req, res) => {
+router.delete('/questions/:id', authenticateToken, async (req, res) => {
   const result = await supabase.from('questions').delete().eq('id', req.params.id);
   handleResponse(res, result);
 });

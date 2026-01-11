@@ -48,11 +48,12 @@ app.get('/api/test-connect', (req, res) => {
 // 认证路由
 app.use('/api/auth', route_auth);
 
-// connect路由
-app.use('/api', authenticateToken, route_connect);
-
 // shuashuashua路由
-app.use('/api/shuashua', authenticateToken, route_shuashua);
+// 公开接口 - 不需要认证
+app.use('/api/shuashua', route_shuashua);
+
+// connect路由
+app.use('/api/connect', authenticateToken, route_connect);
 
 connectMongoDB();
 app.listen(port, () => { console.log("服务器已启动！访问：http://localhost:3000") });
