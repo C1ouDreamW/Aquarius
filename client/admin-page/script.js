@@ -173,7 +173,7 @@ async function fetchData(searchTerm = '') {
         const token = localStorage.getItem('authToken');
 
         // 调用API获取数据，带上Authorization头
-        const response = await fetch(`${API_BASE_URL}/connect-me?search=${encodeURIComponent(searchTerm)}`, {
+        const response = await fetch(`${API_BASE_URL}/connect/connect-me?search=${encodeURIComponent(searchTerm)}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

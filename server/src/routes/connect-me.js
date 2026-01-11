@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 const Connect_me = require('../models/Schema_connect_me')
+const authenticateToken = require('../middleware/auth');
 
 router.use(express.json());
 
@@ -36,7 +37,7 @@ router.post('/submit', async (req, res) => {
 })
 
 // 获取所有connect-me数据，支持搜索功能
-router.get('/connect-me', async (req, res) => {
+router.get('/connect-me', authenticateToken, async (req, res) => {
   try {
     const { search } = req.query;
     let query = {};
