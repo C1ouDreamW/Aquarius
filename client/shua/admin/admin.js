@@ -58,7 +58,7 @@ const groupedContainer = document.getElementById('grouped-questions-container');
 const questionsLoader = document.getElementById('questions-loader');
 
 
-if (localStorage.getItem('admin_token')) {
+if (localStorage.getItem('access_token')) {
   showDashboard();
 }
 
@@ -89,8 +89,8 @@ loginBtn.addEventListener('click', async () => {
       loginBtn.disabled = false;
     } else {
       // 登录成功，保存 token
-      if (data.session) {
-        localStorage.setItem('admin_token', data.session.access_token);
+      if (data.token) {
+        localStorage.setItem('access_token', data.token);
       }
       showDashboard();
     }
@@ -103,7 +103,7 @@ loginBtn.addEventListener('click', async () => {
 });
 
 document.getElementById('logout-btn').addEventListener('click', () => {
-  localStorage.removeItem('admin_token');
+  localStorage.removeItem('access_token');
   location.reload();
 });
 
