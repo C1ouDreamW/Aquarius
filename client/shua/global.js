@@ -5,10 +5,15 @@ const API_BASE = '/api/shuashua';
 async function request(endpoint, options = {}) {
   try {
     // 检查是否为公开接口（不需要认证）
-    const publicEndpoints = ['/categories', '/questions'];
-    const isPublic = publicEndpoints.some(publicEndpoint =>
+    const publicEndpoints = {
+      GET: ['/categories', '/questions'],
+      POST: [],
+      DELETE: []
+    };
+    const method = (options.method || 'GET').toUpperCase();
+    const isPublic = publicEndpoints[method]?.some(publicEndpoint =>
       endpoint === publicEndpoint || endpoint.startsWith(publicEndpoint + '/')
-    );
+    ) || false;
 
     const headers = {
       'Content-Type': 'application/json',

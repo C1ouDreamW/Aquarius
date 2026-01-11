@@ -42,6 +42,8 @@ router.get('/questions', async (req, res) => {
 });
 
 // -- 管理员接口
+const jwt = require('jsonwebtoken');
+
 // 管理员登录
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -52,7 +54,15 @@ router.post('/login', async (req, res) => {
   });
 
   if (error) return res.status(401).json({ success: false, message: error.message });
-  res.json({ success: true, session: data.session });
+  
+  // 生成自己的 JWT token，使用 JWT_SECRET 签名
+  const token = jwt.sign(
+    { username, role: 'admin' },
+    process.env.JWT_SECRET,
+    { expiresIn: '1h' }
+  );
+  
+  res.json({ success: true, token });
 });
 
 // 创建类别
