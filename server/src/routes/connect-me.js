@@ -9,7 +9,7 @@ router.get('/test', (req, res) => {
   res.send("连接成功！")
 })
 
-router.post('/connect', async (req, res) => {
+router.post('/submit', async (req, res) => {
   console.log("接收：", req.body);
 
   if (req.body.name) {

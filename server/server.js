@@ -52,8 +52,8 @@ app.use('/api/auth', route_auth);
 // 公开接口 - 不需要认证
 app.use('/api/shuashua', route_shuashua);
 
-// connect路由
-app.use('/api/connect', authenticateToken, route_connect);
+// connect路由 - 公开接口，不需要认证
+app.use('/api/connect', route_connect);
 
 connectMongoDB();
 app.listen(port, () => { console.log("服务器已启动！访问：http://localhost:3000") });

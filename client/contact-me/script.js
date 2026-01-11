@@ -41,7 +41,7 @@ async function submit_btn() {
     return;
   }
   try {
-    const res = await fetch("/api/connect", {
+    const res = await fetch("/api/connect/submit", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
