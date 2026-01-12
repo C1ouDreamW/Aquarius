@@ -200,7 +200,7 @@ function renderChapterSelect() {
 
 function renderOptions() {
   const type = document.querySelector('input[name="q-type"]:checked').value;
-  const isSingle = type === 'SINGLE_CHOICE';
+  const isSingle = type === 'single_choice';
 
   optionsContainer.innerHTML = '';
 
@@ -510,7 +510,7 @@ function renderQuestionsTable() {
       <tr>
         <td style="width: 60%;">${(q.text || q.question || '').substring(0, 30)}${(q.text || q.question || '').length > 30 ? '...' : ''}</td>
         <td style="width: 20%; color:#666; font-size:0.9em;">
-          ${q.type === 'SINGLE_CHOICE' ? '<span style="color:#28a745">● 单选</span>' : '<span style="color:#007bff">● 多选</span>'}
+          ${q.type === 'single_choice' ? '<span style="color:#28a745">● 单选</span>' : '<span style="color:#007bff">● 多选</span>'}
         </td>
         <td style="width: 20%; text-align: right;">
           <button class="btn-delete" onclick="deleteQuestion('${q.id}')" title="删除">🗑️ 删除</button>

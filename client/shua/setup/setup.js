@@ -95,12 +95,6 @@ async function loadQuestions(chapterName) {
 // 模式选择
 document.querySelectorAll('.mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    if (btn.dataset.mode === 'RANDOM') {
-      // 随机模式正在施工
-      alert('随机功能正在施工中，敬请期待！');
-      return;
-    }
-
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     settings.mode = btn.dataset.mode;
@@ -181,18 +175,31 @@ function showError(msg) {
 startBtn.addEventListener('click', () => {
   if (filteredQuestions.length === 0) return;
 
-  if (settings.mode === 'RANDOM') {
-    // 随机模式正在施工
-    alert('随机功能正在施工中，敬请期待！');
-    return;
-  }
-
   let finalQuestions = [...filteredQuestions];
 
-
+  // 顺序模式按倒序排列
+  if (settings.mode === 'SEQUENTIAL') {
+    // 按创建时间倒序排序
+    finalQuestions.sort((a, b) => {
+      const dateA = new Date(a.created_at || a.createdAt || 0);
+      const dateB = new Date(b.created_at || b.createdAt || 0);
+      return dateB - dateA;
+    });
+  } else if (settings.mode === 'RANDOM') {
+    // 随机模式：打乱题目顺序
+    finalQuestions = shuffleArray(finalQuestions);
+  }
 
   // 截取数量
   finalQuestions = finalQuestions.slice(0, settings.count);
+
+  // // 随机模式：打乱选项顺序
+  // if (settings.mode === 'RANDOM') {
+  //   finalQuestions = finalQuestions.map(q => ({
+  //     ...q,
+  //     options: shuffleArray([...q.options])
+  //   }));
+  // }
 
   // 存入 localStorage
   const quizData = {

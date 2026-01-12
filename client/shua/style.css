@@ -921,6 +921,37 @@ body.dark-mode .nav-theme-btn:hover {
   fill: currentColor;
 }
 
+/* 导航栏里的返回按钮 */
+.nav-back-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  color: var(--btn-icon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.nav-back-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+body.dark-mode .nav-back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-back-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
 /* 给所有页面的容器加内边距 */
 .container {
   padding-top: 70px !important;

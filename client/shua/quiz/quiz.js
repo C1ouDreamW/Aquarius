@@ -6,6 +6,7 @@ initTransitions();
 const progressBar = document.getElementById('progress-bar');
 const quizArea = document.getElementById('quiz-area');
 const resultArea = document.getElementById('result-area');
+const backBtn = document.getElementById('back-btn');
 
 // 题目区域
 const quizTag = document.getElementById('quiz-tag');
@@ -26,6 +27,11 @@ let currentIndex = 0;
 let score = 0;
 let selectedOptionIds = new Set();
 let isAnswered = false;
+
+// 返回按钮事件监听
+backBtn.addEventListener('click', () => {
+  window.history.back();
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   const rawData = localStorage.getItem('current_quiz_data');
