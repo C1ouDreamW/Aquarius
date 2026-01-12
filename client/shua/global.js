@@ -25,6 +25,10 @@ async function request(endpoint, options = {}) {
       const token = localStorage.getItem('access_token');
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        // 没有token，跳转到登录页面
+        window.location.href = '/shua/admin/admin.html';
+        return { data: null, error: new Error('No access token') };
       }
     }
 
@@ -32,6 +36,13 @@ async function request(endpoint, options = {}) {
       headers,
       ...options
     });
+
+    if (res.status === 401 || res.status === 403) {
+      // 清除无效token并跳转到登录页面
+      localStorage.removeItem('access_token');
+      window.location.href = '/shua/admin/admin.html';
+      return { data: null, error: new Error('Authentication failed') };
+    }
 
     if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
     const json = await res.json();
