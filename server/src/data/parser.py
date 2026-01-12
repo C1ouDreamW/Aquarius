@@ -60,11 +60,11 @@ class JsonToSqliteImporter:
             print(f"❌ 类别操作失败: {e}")
             return None
     
-    def ensure_chapter_exists(self, category_id, chapter_name):
+    def ensure_chapter_exists(self, category_name, chapter_name):
         """确保章节存在，不存在则创建"""
         try:
             # 检查章节是否存在
-            self.cursor.execute("SELECT id FROM Chapters WHERE category = ? AND name = ?", (category_id, chapter_name))
+            self.cursor.execute("SELECT id FROM Chapters WHERE category = ? AND name = ?", (category_name, chapter_name))
             result = self.cursor.fetchone()
             
             if result:
@@ -77,7 +77,7 @@ class JsonToSqliteImporter:
                 self.cursor.execute('''
                     INSERT INTO Chapters (id, category, name, created_at, createdAt, updatedAt)
                     VALUES (?, ?, ?, ?, ?, ?)
-                ''', (chapter_id, category_id, chapter_name, now, now, now))
+                ''', (chapter_id, category_name, chapter_name, now, now, now))
                 self.conn.commit()
                 print(f"✅ 创建新章节: '{chapter_name}'，ID: {chapter_id}")
             
@@ -190,7 +190,7 @@ class JsonToSqliteImporter:
         category_id, category_name = category_result
         
         # 确保章节存在
-        chapter_result = self.ensure_chapter_exists(category_id, chapter_name)
+        chapter_result = self.ensure_chapter_exists(category_name, chapter_name)
         if not chapter_result:
             return False
         chapter_id, chapter_name = chapter_result
