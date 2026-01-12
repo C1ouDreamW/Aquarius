@@ -3,7 +3,8 @@
 node_modules
 read.txt
 .vscode/
-server/src/data
+server/src/data/json/*
+server/src/data/database.sqlite
 server/package-lock.json
 server/read.txt
 logs
