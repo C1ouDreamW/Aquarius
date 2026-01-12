@@ -53,20 +53,35 @@ function renderQuestion() {
   const progress = ((currentIndex) / questions.length) * 100;
   progressBar.style.width = `${progress}%`;
 
-  const typeText = currentQ.type === 'SINGLE_CHOICE' ? '单选' : '多选';
+  const typeText = currentQ.type === 'single_choice' ? '单选' : '多选';
   quizTag.textContent = `${currentQ.category} · ${typeText}`;
   quizCounter.textContent = `${currentIndex + 1} / ${questions.length}`;
 
   questionText.textContent = currentQ.text;
 
   optionsList.innerHTML = '';
-  currentQ.options.forEach(opt => {
+  // 处理选项格式，支持字符串数组和对象数组
+  const options = currentQ.options;
+  options.forEach((opt, index) => {
+    let optionText = '';
+    let optionId = '';
+
+    if (typeof opt === 'string') {
+      // 字符串格式：直接使用字符串作为文本，生成ID
+      optionText = opt;
+      optionId = String.fromCharCode(65 + index); // A, B, C, D...
+    } else {
+      // 对象格式：使用对象的text和id属性
+      optionText = opt.text || '';
+      optionId = opt.id || String.fromCharCode(65 + index);
+    }
+
     const btn = document.createElement('button');
     btn.className = 'option-btn';
-    btn.innerHTML = `<span>${opt.text}</span>`;
-    btn.dataset.id = opt.id;
+    btn.innerHTML = `<span>${optionText}</span>`;
+    btn.dataset.id = optionId;
 
-    btn.onclick = () => handleOptionClick(opt.id, btn);
+    btn.onclick = () => handleOptionClick(optionId, btn);
     optionsList.appendChild(btn);
   });
 }
@@ -75,7 +90,7 @@ function handleOptionClick(id, btnElement) {
   if (isAnswered) return;
 
   const currentQ = quizData.questions[currentIndex];
-  const isSingle = currentQ.type === 'SINGLE_CHOICE';
+  const isSingle = currentQ.type === 'single_choice';
 
   if (isSingle) {
     selectedOptionIds.clear();

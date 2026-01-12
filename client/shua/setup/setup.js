@@ -69,10 +69,10 @@ async function loadQuestions(chapterName) {
     allQuestions = (data || []).filter(q => {
       if (chapterName) {
         // 筛选特定章节的题目
-        return q.category === `${currentCategoryName}-${chapterName}`;
+        return q.category === currentCategoryName && q.chapter === chapterName;
       } else {
         // 筛选整个类别的题目（包含所有章节）
-        return q.category.startsWith(`${currentCategoryName}-`);
+        return q.category === currentCategoryName;
       }
     });
 
@@ -95,6 +95,12 @@ async function loadQuestions(chapterName) {
 // 模式选择
 document.querySelectorAll('.mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
+    if (btn.dataset.mode === 'RANDOM') {
+      // 随机模式正在施工
+      alert('随机功能正在施工中，敬请期待！');
+      return;
+    }
+
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     settings.mode = btn.dataset.mode;
@@ -116,8 +122,8 @@ function applyFilters() {
   // 过滤题目
   filteredQuestions = allQuestions.filter(q => {
     if (settings.type === 'ALL') return true;
-    if (settings.type === 'SINGLE') return q.type === 'SINGLE_CHOICE';
-    if (settings.type === 'MULTIPLE') return q.type === 'MULTIPLE_CHOICE';
+    if (settings.type === 'SINGLE') return q.type === 'single_choice';
+    if (settings.type === 'MULTIPLE') return q.type === 'multiple_choice';
     return true;
   });
 
@@ -175,21 +181,18 @@ function showError(msg) {
 startBtn.addEventListener('click', () => {
   if (filteredQuestions.length === 0) return;
 
+  if (settings.mode === 'RANDOM') {
+    // 随机模式正在施工
+    alert('随机功能正在施工中，敬请期待！');
+    return;
+  }
+
   let finalQuestions = [...filteredQuestions];
 
-  if (settings.mode === 'RANDOM') {
-    finalQuestions = shuffleArray(finalQuestions);
-  }
+
 
   // 截取数量
   finalQuestions = finalQuestions.slice(0, settings.count);
-
-  if (settings.mode === 'RANDOM') {
-    finalQuestions = finalQuestions.map(q => ({
-      ...q,
-      options: shuffleArray([...q.options])
-    }));
-  }
 
   // 存入 localStorage
   const quizData = {
