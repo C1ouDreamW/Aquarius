@@ -59,6 +59,10 @@ body.dark-mode {
   box-sizing: border-box;
   transition: background var(--change-speed) ease, color var(--change-color-speed) ease;
   /* 让颜色切换有过渡动画 */
+  /* 禁用移动端浏览器的默认点击高亮效果 */
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
+  outline: none;
 }
 
 body {

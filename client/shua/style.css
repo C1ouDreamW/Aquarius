@@ -1,6 +1,15 @@
 /* 引入主页的变量和基础样式，确保风格一致 */
 @import url('../main-page/style.css');
 
+/* 全局移除所有元素的点击高亮（推荐） */
+* {
+  -webkit-tap-highlight-color: transparent;
+  /* 核心属性：设为透明 */
+  tap-highlight-color: transparent;
+  /* 兼容部分安卓浏览器 */
+  outline: none;
+  /* 避免焦点边框干扰 */
+}
 
 /* 继承主页的字体设置 */
 input,
@@ -1249,6 +1258,126 @@ body.dark-mode .chapter-item.all-questions {
   }
 
   .chapter-link {
+    font-size: 0.9rem;
+  }
+}
+
+/* 响应式导航栏 */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 16px;
+    height: 56px;
+  }
+
+  .nav-logo {
+    font-size: 1rem;
+  }
+
+  .nav-link {
+    font-size: 0.8rem;
+    padding: 6px 8px;
+  }
+
+  .nav-link span {
+    display: none;
+  }
+
+  .home-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .nav-theme-btn {
+    margin-left: 4px;
+  }
+
+  .nav-theme-btn svg,
+  .nav-back-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* 容器响应式调整 */
+  .container {
+    padding-top: 60px !important;
+    padding-bottom: 80px !important;
+  }
+
+  /* 题目卡片响应式调整 */
+  .quiz-card {
+    min-height: 350px;
+  }
+
+  #question-text {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  /* 选项按钮响应式调整 */
+  .option-btn {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+  }
+
+  /* 提交按钮响应式调整 */
+  .submit-btn {
+    padding: 12px;
+    font-size: 1rem;
+  }
+
+  /* 结果卡片响应式调整 */
+  .result-card {
+    padding: 30px 15px;
+  }
+
+  .score-big {
+    font-size: 3rem;
+  }
+
+  /* 导航栏响应式调整 */
+  .nav-header {
+    margin-bottom: 20px;
+  }
+
+  .nav-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .nav-header p {
+    font-size: 0.9rem;
+  }
+}
+
+/* 小屏幕设备的额外调整 */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 12px;
+  }
+
+  .nav-logo {
+    font-size: 0.9rem;
+  }
+
+  .nav-link {
+    font-size: 0.75rem;
+    padding: 4px 6px;
+  }
+
+  #question-text {
+    font-size: 1rem;
+  }
+
+  .option-btn {
+    padding: 12px 14px;
+    font-size: 0.9rem;
+  }
+
+  .feedback-box {
+    padding: 12px;
+  }
+
+  #explanation-text {
     font-size: 0.9rem;
   }
 }
