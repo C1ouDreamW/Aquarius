@@ -308,6 +308,113 @@ header p {
   }
 }
 
+/* 移动端响应式优化 */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  header {
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  header p {
+    font-size: 1rem;
+  }
+
+  .bento-grid {
+    gap: 16px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .card h3 {
+    font-size: 1.3rem;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+  }
+
+  .icon {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+
+  /* 个人介绍卡片移动端优化 */
+  .card-profile {
+    grid-row: span 2;
+  }
+}
+
+/* 小屏幕设备的额外优化 */
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+  }
+
+  header p {
+    font-size: 0.9rem;
+  }
+
+  .bento-grid {
+    gap: 12px;
+  }
+
+  .card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .card h3 {
+    font-size: 1.2rem;
+  }
+
+  .card p {
+    font-size: 0.85rem;
+  }
+
+  .icon {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+  }
+
+  /* 个人介绍卡片小屏幕优化 */
+  .card-profile {
+    grid-row: span 2;
+  }
+}
+
+/* 平板设备的优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    max-width: 90%;
+  }
+
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card-profile {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .card-blog {
+    grid-column: span 2;
+  }
+}
+
 /* =========================================
    6. 切换按钮样式
    ========================================= */

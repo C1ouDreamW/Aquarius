@@ -103,3 +103,49 @@
 .decor-icon.chidouren {
   --r: -20deg;
 }
+
+/* 个人介绍卡片移动端优化 */
+@media (max-width: 768px) {
+  .decor-icon.game {
+    width: 60px;
+    right: -5px;
+    top: -5px;
+  }
+
+  .decor-icon.internet {
+    width: 45px;
+    right: 15px;
+    bottom: 15px;
+  }
+
+  .decor-icon.chidouren {
+    width: 35px;
+    right: 70px;
+    top: 20px;
+  }
+
+  .decor-icon.code {
+    width: 80px;
+  }
+}
+
+/* 小屏幕设备的额外优化 */
+@media (max-width: 480px) {
+  .decor-icon.game {
+    width: 50px;
+  }
+
+  .decor-icon.internet {
+    width: 35px;
+  }
+
+  .decor-icon.chidouren {
+    width: 25px;
+    right: 50px;
+    top: 15px;
+  }
+
+  .decor-icon.code {
+    width: 60px;
+  }
+}
