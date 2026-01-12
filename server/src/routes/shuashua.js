@@ -80,18 +80,9 @@ const User = sequelize.define('User', {
 // 初始化数据库
 async function initDatabase() {
   try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync();
     console.log('SQLite database synchronized successfully');
 
-    // 创建默认管理员用户（如果不存在）
-    const existingUser = await User.findOne({ where: { username: 'admin' } });
-    if (!existingUser) {
-      await User.create({
-        username: 'admin',
-        password: 'admin123'
-      });
-      console.log('Default admin user created');
-    }
   } catch (err) {
     console.error('Error initializing database:', err);
   }
