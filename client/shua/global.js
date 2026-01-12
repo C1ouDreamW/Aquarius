@@ -6,7 +6,7 @@ async function request(endpoint, options = {}) {
   try {
     // 检查是否为公开接口（不需要认证）
     const publicEndpoints = {
-      GET: ['/categories', '/questions'],
+      GET: ['/categories', '/questions', '/chapters'],
       POST: [],
       DELETE: []
     };
