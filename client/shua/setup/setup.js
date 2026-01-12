@@ -30,18 +30,22 @@ let settings = {
 document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   currentCategoryId = params.get('categoryId');
+  currentCategoryName = params.get('categoryName');
+  const chapterName = params.get('chapterName');
 
-  if (!currentCategoryId) {
-    showError("未找到类别 ID，请返回首页重试");
+  if (!currentCategoryName && !currentCategoryId) {
+    showError("未找到类别信息，请返回首页重试");
     return;
   }
 
   await loadCategoryInfo();
-  await loadQuestions();
+  await loadQuestions(chapterName);
 });
 
 // 加载类别信息
 async function loadCategoryInfo() {
+  if (currentCategoryName) return;
+
   const { data: categories, error } = await api.getCategories();
   if (!error && categories) {
     const cat = categories.find(c => c.id === currentCategoryId);
@@ -52,16 +56,25 @@ async function loadCategoryInfo() {
 }
 
 // 加载题目数据
-async function loadQuestions() {
+async function loadQuestions(chapterName) {
   try {
     // 先获取所有题目，在前端进行筛选
     if (!currentCategoryName) return;
 
-    const { data, error } = await api.getQuestions(currentCategoryName);
+    const { data, error } = await api.getQuestions();
 
     if (error) throw error;
 
-    allQuestions = data || [];
+    // 根据类别和章节筛选题目
+    allQuestions = (data || []).filter(q => {
+      if (chapterName) {
+        // 筛选特定章节的题目
+        return q.category === `${currentCategoryName}-${chapterName}`;
+      } else {
+        // 筛选整个类别的题目（包含所有章节）
+        return q.category.startsWith(`${currentCategoryName}-`);
+      }
+    });
 
     infoBanner.style.display = 'flex';
     infoTextCount.textContent = `该分类已有 ${allQuestions.length} 道题目`;

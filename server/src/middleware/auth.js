@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 /**
  * JWT认证中间件
@@ -10,7 +10,7 @@ const authenticateToken = (req, res, next) => {
   // 从Authorization头获取令牌
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  
+
   // 如果没有令牌，返回401未授权
   if (!token) {
     return res.status(401).json({
@@ -19,7 +19,7 @@ const authenticateToken = (req, res, next) => {
       code: 401
     });
   }
-  
+
   // 验证令牌
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     // 如果令牌无效，返回403禁止访问
@@ -30,11 +30,11 @@ const authenticateToken = (req, res, next) => {
         code: 403
       });
     }
-    
+
     // 将用户信息存储到请求对象中
     req.user = user;
     next();
   });
 };
 
-module.exports = authenticateToken;
+export default authenticateToken;

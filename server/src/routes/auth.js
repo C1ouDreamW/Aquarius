@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import jwt from 'jsonwebtoken';
+
 const router = express.Router();
-const jwt = require('jsonwebtoken');
 
 /**
  * 管理员登录路由
@@ -10,11 +11,11 @@ const jwt = require('jsonwebtoken');
  */
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
-  
+
   // 从环境变量获取管理员凭证
   const adminUsername = process.env.ADMIN_USERNAME;
   const adminPassword = process.env.ADMIN_PASSWORD;
-  
+
   // 验证用户名和密码
   if (username === adminUsername && password === adminPassword) {
     // 创建JWT令牌，有效期为1小时
@@ -23,7 +24,7 @@ router.post('/login', (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-    
+
     // 返回成功响应和令牌
     res.json({
       success: true,
@@ -53,7 +54,7 @@ router.post('/login', (req, res) => {
 router.get('/verify', (req, res) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  
+
   if (!token) {
     return res.status(401).json({
       success: false,
@@ -61,7 +62,7 @@ router.get('/verify', (req, res) => {
       code: 401
     });
   }
-  
+
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       return res.status(403).json({
@@ -70,7 +71,7 @@ router.get('/verify', (req, res) => {
         code: 403
       });
     }
-    
+
     res.json({
       success: true,
       message: '令牌有效',
@@ -79,4 +80,4 @@ router.get('/verify', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

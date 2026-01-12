@@ -1,14 +1,20 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const path = require('path'); // 引入path模块处理路径
-require('dotenv').config();
+import express from 'express';
+import mongoose from 'mongoose';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import route_connect from './src/routes/connect-me.js';
+import route_shuashua from './src/routes/shuashua.js';
+import route_auth from './src/routes/auth.js';
+import authenticateToken from './src/middleware/auth.js';
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const port = 3000;
-const cors = require('cors')
-const route_connect = require('./src/routes/connect-me');
-const route_shuashua = require('./src/routes/shuashua');
-const route_auth = require('./src/routes/auth'); // 导入认证路由
-const authenticateToken = require('./src/middleware/auth'); // 导入认证中间件
 const MongoURI = process.env.MongoURI;
 
 async function connectMongoDB() {

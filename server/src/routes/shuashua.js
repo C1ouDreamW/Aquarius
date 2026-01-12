@@ -1,17 +1,109 @@
-const express = require('express');
-const router = express.Router();
-const { createClient } = require('@supabase/supabase-js');
-const authenticateToken = require('../middleware/auth');
+import express from 'express';
+import { Sequelize, DataTypes } from 'sequelize';
+import authenticateToken from '../middleware/auth.js';
+import jwt from 'jsonwebtoken';
 
-// 初始化 Supabase
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const router = express.Router();
+
+// 初始化 SQLite 数据库
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: './src/data/database.sqlite'
+});
+
+// 定义模型
+const Category = sequelize.define('Category', {
+  id: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    defaultValue: () => Math.random().toString(36).substr(2, 9)
+  },
+  name: DataTypes.STRING,
+  icon: DataTypes.STRING,
+  color: DataTypes.STRING,
+  description: DataTypes.TEXT,
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  }
+});
+
+const Chapter = sequelize.define('Chapter', {
+  id: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    defaultValue: () => Math.random().toString(36).substr(2, 9)
+  },
+  category: DataTypes.STRING,
+  name: DataTypes.STRING,
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  }
+});
+
+const Question = sequelize.define('Question', {
+  id: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    defaultValue: () => Math.random().toString(36).substr(2, 9)
+  },
+  category: DataTypes.STRING,
+  chapter: DataTypes.STRING,
+  text: DataTypes.TEXT,
+  question: DataTypes.TEXT,
+  type: DataTypes.STRING,
+  options: DataTypes.JSON,
+  answer: DataTypes.STRING,
+  correct_option_ids: DataTypes.JSON,
+  explanation: DataTypes.TEXT,
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  }
+});
+
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    defaultValue: () => Math.random().toString(36).substr(2, 9)
+  },
+  username: DataTypes.STRING,
+  password: DataTypes.STRING,
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  }
+});
+
+// 初始化数据库
+async function initDatabase() {
+  try {
+    await sequelize.sync({ force: true });
+    console.log('SQLite database synchronized successfully');
+
+    // 创建默认管理员用户（如果不存在）
+    const existingUser = await User.findOne({ where: { username: 'admin' } });
+    if (!existingUser) {
+      await User.create({
+        username: 'admin',
+        password: 'admin123'
+      });
+      console.log('Default admin user created');
+    }
+  } catch (err) {
+    console.error('Error initializing database:', err);
+  }
+}
+
+// 启动时初始化数据库
+initDatabase();
 
 // 错误处理
-const handleResponse = (res, { data, error }) => {
+const handleResponse = (res, data, error) => {
   if (error) {
-    console.error('Supabase Error:', error);
+    console.error('Database Error:', error);
     return res.status(500).json({ success: false, message: error.message });
   }
   res.json({ success: true, data });
@@ -20,73 +112,187 @@ const handleResponse = (res, { data, error }) => {
 // -- 公开接口
 // 获取所有类别
 router.get('/categories', async (req, res) => {
-  const result = await supabase
-    .from('categories')
-    .select('*')
-    .order('created_at', { ascending: false });
-  handleResponse(res, result);
+  try {
+    const data = await Category.findAll({ order: [['created_at', 'DESC']] });
+    handleResponse(res, data, null);
+  } catch (error) {
+    handleResponse(res, null, error);
+  }
+});
+
+// 获取章节
+router.get('/chapters', async (req, res) => {
+  try {
+    const { category } = req.query;
+    let query = {};
+    if (category) {
+      query.category = category;
+    }
+    const data = await Chapter.findAll({
+      where: query,
+      order: [['created_at', 'DESC']]
+    });
+    handleResponse(res, data, null);
+  } catch (error) {
+    handleResponse(res, null, error);
+  }
 });
 
 // 获取题目
 router.get('/questions', async (req, res) => {
-  const { category } = req.query;
-  let query = supabase.from('questions').select('*');
-
-  if (category) {
-    query = query.eq('category', category);
+  try {
+    const { category } = req.query;
+    let query = {};
+    if (category) {
+      query.category = category;
+    }
+    const data = await Question.findAll({
+      where: query,
+      order: [['created_at', 'DESC']]
+    });
+    // 转换数据结构以匹配前端期望
+    const formattedData = data.map(item => ({
+      id: item.id,
+      category: item.category,
+      chapter: item.chapter,
+      text: item.text || item.question,
+      question: item.question,
+      type: item.type || 'SINGLE_CHOICE',
+      options: item.options,
+      answer: item.answer,
+      correct_option_ids: item.correct_option_ids || (item.answer ? [item.answer] : []),
+      explanation: item.explanation,
+      created_at: item.created_at,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt
+    }));
+    handleResponse(res, formattedData, null);
+  } catch (error) {
+    handleResponse(res, null, error);
   }
-
-  // 默认按时间倒序
-  const result = await query.order('created_at', { ascending: false });
-  handleResponse(res, result);
 });
 
 // -- 管理员接口
-const jwt = require('jsonwebtoken');
 
 // 管理员登录
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  const email = `${username}@cloud.qwq`;
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ where: { username } });
 
-  if (error) return res.status(401).json({ success: false, message: error.message });
-  
-  // 生成自己的 JWT token，使用 JWT_SECRET 签名
-  const token = jwt.sign(
-    { username, role: 'admin' },
-    process.env.JWT_SECRET,
-    { expiresIn: '1h' }
-  );
-  
-  res.json({ success: true, token });
+    if (!user || user.password !== password) {
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    // 生成 JWT token
+    const token = jwt.sign(
+      { username, role: 'admin' },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ success: true, token });
+  } catch (error) {
+    handleResponse(res, null, error);
+  }
 });
 
 // 创建类别
 router.post('/categories', authenticateToken, async (req, res) => {
-  const result = await supabase.from('categories').insert([req.body]).select();
-  handleResponse(res, result);
+  try {
+    const categoryData = {
+      id: req.body.id || Math.random().toString(36).substr(2, 9),
+      name: req.body.name,
+      icon: req.body.icon,
+      color: req.body.color,
+      description: req.body.description,
+      created_at: req.body.created_at || new Date().toISOString()
+    };
+    const data = await Category.create(categoryData);
+    handleResponse(res, data, null);
+  } catch (error) {
+    handleResponse(res, null, error);
+  }
 });
 
 // 删除类别
 router.delete('/categories/:id', authenticateToken, async (req, res) => {
-  const result = await supabase.from('categories').delete().eq('id', req.params.id);
-  handleResponse(res, result);
+  try {
+    const data = await Category.destroy({ where: { id: req.params.id } });
+    handleResponse(res, data, null);
+  } catch (error) {
+    handleResponse(res, null, error);
+  }
 });
 
 // 创建题目
 router.post('/questions', authenticateToken, async (req, res) => {
-  const result = await supabase.from('questions').insert([req.body]).select();
-  handleResponse(res, result);
+  try {
+    // 处理前端提交的数据结构
+    const questionData = {
+      id: req.body.id || Math.random().toString(36).substr(2, 9),
+      category: req.body.category,
+      chapter: req.body.chapter,
+      text: req.body.text,
+      question: req.body.text, // 保持兼容性
+      type: req.body.type,
+      options: req.body.options,
+      answer: Array.isArray(req.body.correct_option_ids) ? req.body.correct_option_ids[0] : req.body.correct_option_ids,
+      correct_option_ids: req.body.correct_option_ids,
+      explanation: req.body.explanation,
+      created_at: req.body.created_at || new Date().toISOString()
+    };
+    const data = await Question.create(questionData);
+    // 返回格式化的数据结构
+    const formattedData = {
+      id: data.id,
+      category: data.category,
+      chapter: data.chapter,
+      text: data.text || data.question,
+      question: data.question,
+      type: data.type || 'SINGLE_CHOICE',
+      options: data.options,
+      answer: data.answer,
+      correct_option_ids: data.correct_option_ids || (data.answer ? [data.answer] : []),
+      explanation: data.explanation,
+      created_at: data.created_at,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt
+    };
+    handleResponse(res, formattedData, null);
+  } catch (error) {
+    handleResponse(res, null, error);
+  }
 });
 
 // 删除题目
 router.delete('/questions/:id', authenticateToken, async (req, res) => {
-  const result = await supabase.from('questions').delete().eq('id', req.params.id);
-  handleResponse(res, result);
+  try {
+    const data = await Question.destroy({ where: { id: req.params.id } });
+    handleResponse(res, data, null);
+  } catch (error) {
+    handleResponse(res, null, error);
+  }
 });
 
-module.exports = router;
+// 创建章节
+router.post('/chapters', authenticateToken, async (req, res) => {
+  try {
+    const data = await Chapter.create(req.body);
+    handleResponse(res, data, null);
+  } catch (error) {
+    handleResponse(res, null, error);
+  }
+});
+
+// 删除章节
+router.delete('/chapters/:id', authenticateToken, async (req, res) => {
+  try {
+    const data = await Chapter.destroy({ where: { id: req.params.id } });
+    handleResponse(res, data, null);
+  } catch (error) {
+    handleResponse(res, null, error);
+  }
+});
+
+export default router;

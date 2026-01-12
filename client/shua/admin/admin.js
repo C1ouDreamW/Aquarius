@@ -16,6 +16,7 @@ const COLORS = [
 ];
 
 let categories = [];
+let chapters = [];
 let questions = [];
 let createQOptions = [
   { id: 'opt1', text: '' },
@@ -38,11 +39,18 @@ const tabContents = document.querySelectorAll('.tab-content');
 
 // 创建题目
 const categorySelect = document.getElementById('q-category-select');
+const chapterSelect = document.getElementById('q-chapter-select');
 const qText = document.getElementById('q-text');
 const optionsContainer = document.getElementById('options-container');
 const addOptionBtn = document.getElementById('add-option-btn');
 const qExplanation = document.getElementById('q-explanation');
 const saveQBtn = document.getElementById('save-q-btn');
+
+// 章节管理
+const chapterCategorySelect = document.getElementById('chapter-category-select');
+const chapterName = document.getElementById('chapter-name');
+const saveChapterBtn = document.getElementById('save-chapter-btn');
+const chaptersListDiv = document.getElementById('chapters-list');
 
 // 创建类别
 const catName = document.getElementById('cat-name');
@@ -111,6 +119,7 @@ function showDashboard() {
   loginModal.style.display = 'none';
   adminDashboard.style.display = 'block';
   loadCategories();
+  loadChapters();
   loadQuestions();
 }
 
@@ -128,7 +137,10 @@ navBtns.forEach(btn => {
     const tabId = btn.dataset.tab;
     document.getElementById(`tab-${tabId}`).classList.add('active');
 
-    if (tabId === 'create-q' || tabId === 'category') loadCategories();
+    if (tabId === 'create-q' || tabId === 'category') {
+      loadCategories();
+      loadChapters();
+    }
     if (tabId === 'list-q') loadQuestions();
   });
 });
@@ -161,6 +173,29 @@ function renderCategorySelect() {
   categorySelect.innerHTML = categories.length === 0
     ? '<option disabled selected>请先去创建类别</option>'
     : categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+
+  chapterCategorySelect.innerHTML = categories.length === 0
+    ? '<option disabled selected>请先去创建类别</option>'
+    : categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+}
+
+async function loadChapters() {
+  const { data, error } = await api.getChapters();
+
+  if (!error) {
+    chapters = data || [];
+    renderChapterSelect();
+    renderChaptersList();
+  }
+}
+
+function renderChapterSelect() {
+  const selectedCategory = categorySelect.value;
+  const categoryChapters = chapters.filter(chapter => chapter.category === selectedCategory);
+
+  chapterSelect.innerHTML = categoryChapters.length === 0
+    ? '<option disabled selected>请先为该类别添加章节</option>'
+    : categoryChapters.map(chapter => `<option value="${chapter.name}">${chapter.name}</option>`).join('');
 }
 
 function renderOptions() {
@@ -214,14 +249,94 @@ addOptionBtn.addEventListener('click', () => {
 
 renderOptions();
 
+// 类别选择变化时更新章节选择器
+categorySelect.addEventListener('change', renderChapterSelect);
+
+// 章节类别选择变化时更新章节列表
+chapterCategorySelect.addEventListener('change', renderChaptersList);
+
+// 保存章节
+saveChapterBtn.addEventListener('click', async () => {
+  const category = chapterCategorySelect.value;
+  const name = chapterName.value.trim();
+
+  if (!category) return alert('请选择类别');
+  if (!name) return alert('请输入章节名称');
+
+  // 检查章节是否已存在
+  const existingChapter = chapters.find(chapter =>
+    chapter.category === category && chapter.name === name
+  );
+
+  if (existingChapter) return alert('该章节已存在');
+
+  saveChapterBtn.innerText = '保存中...';
+  saveChapterBtn.disabled = true;
+
+  try {
+    // 添加新章节
+    const newChapter = {
+      id: crypto.randomUUID(),
+      category,
+      name,
+      created_at: new Date().toISOString()
+    };
+
+    const { error } = await api.addChapter(newChapter);
+
+    if (error) throw error;
+
+    await loadChapters();
+    chapterName.value = '';
+    alert('章节添加成功！');
+  } catch (err) {
+    console.error(err);
+    alert('保存失败: ' + (err.message || '未知错误'));
+  } finally {
+    saveChapterBtn.innerText = '保存章节';
+    saveChapterBtn.disabled = false;
+  }
+});
+
+function renderChaptersList() {
+  const selectedCategory = chapterCategorySelect.value;
+  const categoryChapters = chapters.filter(chapter => chapter.category === selectedCategory);
+
+  chaptersListDiv.innerHTML = categoryChapters.length === 0
+    ? '<div style="text-align:center; padding:20px; color:#888;">暂无章节</div>'
+    : categoryChapters.map(chapter => `
+      <div class="list-group-item">
+        <div>
+          <strong>${chapter.name}</strong>
+        </div>
+        <button class="btn-delete" onclick="deleteChapter('${chapter.id}')">🗑️</button>
+      </div>
+    `).join('');
+}
+
+window.deleteChapter = async (id) => {
+  if (!confirm('确定删除该章节吗？')) return;
+
+  try {
+    const { error } = await api.deleteChapter(id);
+    if (error) throw error;
+    await loadChapters();
+  } catch (err) {
+    console.error(err);
+    alert('删除失败: ' + (err.message || '未知错误'));
+  }
+};
+
 // 保存题目
 saveQBtn.addEventListener('click', async () => {
   const category = categorySelect.value;
+  const chapter = chapterSelect.value;
   const type = document.querySelector('input[name="q-type"]:checked').value;
   const text = qText.value.trim();
   const explanation = qExplanation.value.trim();
 
   if (!category) return alert('请先选择类别');
+  if (!chapter) return alert('请选择章节');
   if (!text) return alert('请输入题目描述');
   if (createQOptions.some(o => !o.text.trim())) return alert('请填写所有选项内容');
 
@@ -237,9 +352,12 @@ saveQBtn.addEventListener('click', async () => {
   saveQBtn.disabled = true;
 
   try {
+    // 采用 "类别名称-章节名称" 的格式存储分类信息
+    const categoryWithChapter = `${category}-${chapter}`;
+
     const newQuestion = {
       id: crypto.randomUUID(),
-      category,
+      category: categoryWithChapter,
       type,
       text,
       options: createQOptions,
@@ -390,7 +508,7 @@ function renderQuestionsTable() {
     // 生成表格内容 HTML
     const rowsHtml = categoryQuestions.map(q => `
       <tr>
-        <td style="width: 60%;">${q.text.substring(0, 30)}${q.text.length > 30 ? '...' : ''}</td>
+        <td style="width: 60%;">${(q.text || q.question || '').substring(0, 30)}${(q.text || q.question || '').length > 30 ? '...' : ''}</td>
         <td style="width: 20%; color:#666; font-size:0.9em;">
           ${q.type === 'SINGLE_CHOICE' ? '<span style="color:#28a745">● 单选</span>' : '<span style="color:#007bff">● 多选</span>'}
         </td>

@@ -109,6 +109,11 @@
               </div>
 
               <div class="form-group">
+                <label>选择章节</label>
+                <select id="q-chapter-select" class="input-field"></select>
+              </div>
+
+              <div class="form-group">
                 <label>题目类型</label>
                 <div class="radio-group">
                   <label><input type="radio" name="q-type" value="SINGLE_CHOICE" checked> 单选题</label>
@@ -198,6 +203,21 @@
             <div class="card">
               <h3>类别列表</h3>
               <div id="categories-list" class="list-group">
+              </div>
+            </div>
+
+            <div class="card mt-4">
+              <h3>章节管理</h3>
+              <div class="form-group">
+                <label>选择类别</label>
+                <select id="chapter-category-select" class="input-field"></select>
+              </div>
+              <div class="form-group">
+                <label>章节名称</label>
+                <input type="text" id="chapter-name" class="input-field" placeholder="例如: 第一章 马克思主义的产生和发展">
+              </div>
+              <button id="save-chapter-btn" class="submit-btn">保存章节</button>
+              <div id="chapters-list" class="list-group mt-3">
               </div>
             </div>
           </div>

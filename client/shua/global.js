@@ -55,6 +55,12 @@ export const api = {
     return request(`/questions${query}`);
   },
 
+  // 获取章节
+  getChapters: (category) => {
+    const query = category ? `?category=${encodeURIComponent(category)}` : '';
+    return request(`/chapters${query}`);
+  },
+
   // 登录
   signIn: async (username, password) => {
     const res = await fetch(`${API_BASE}/login`, {
@@ -71,7 +77,9 @@ export const api = {
   addCategory: (data) => request('/categories', { method: 'POST', body: JSON.stringify(data) }),
   deleteCategory: (id) => request(`/categories/${id}`, { method: 'DELETE' }),
   addQuestion: (data) => request('/questions', { method: 'POST', body: JSON.stringify(data) }),
-  deleteQuestion: (id) => request(`/questions/${id}`, { method: 'DELETE' })
+  deleteQuestion: (id) => request(`/questions/${id}`, { method: 'DELETE' }),
+  addChapter: (data) => request('/chapters', { method: 'POST', body: JSON.stringify(data) }),
+  deleteChapter: (id) => request(`/chapters/${id}`, { method: 'DELETE' })
 };
 
 

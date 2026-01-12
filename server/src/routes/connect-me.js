@@ -1,8 +1,9 @@
-const express = require('express');
-const mongoose = require('mongoose');
+import express from 'express';
+import mongoose from 'mongoose';
+import Connect_me from '../models/Schema_connect_me.js';
+import authenticateToken from '../middleware/auth.js';
+
 const router = express.Router();
-const Connect_me = require('../models/Schema_connect_me')
-const authenticateToken = require('../middleware/auth');
 
 router.use(express.json());
 
@@ -72,4 +73,4 @@ router.get('/connect-me', authenticateToken, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

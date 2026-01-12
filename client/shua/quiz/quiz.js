@@ -100,7 +100,16 @@ function handleOptionClick(id, btnElement) {
 function submitAnswer() {
   isAnswered = true;
   const currentQ = quizData.questions[currentIndex];
-  const correctIds = currentQ.correct_option_ids;
+  // 处理不同的数据结构
+  let correctIds = currentQ.correct_option_ids || currentQ.answer;
+  // 确保 correctIds 是一个数组
+  if (typeof correctIds === 'string') {
+    correctIds = [correctIds];
+  }
+  // 确保 correctIds 至少是一个空数组
+  if (!Array.isArray(correctIds)) {
+    correctIds = [];
+  }
   const selectedArray = Array.from(selectedOptionIds);
   const isCorrect = selectedArray.length === correctIds.length &&
     selectedArray.every(id => correctIds.includes(id));
