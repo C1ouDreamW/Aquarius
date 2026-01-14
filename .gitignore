@@ -5,6 +5,7 @@ read.txt
 .vscode/
 server/src/data/json/*
 server/src/data/database.sqlite
+server/src/data/backup/*
 server/package-lock.json
 server/read.txt
 logs
