@@ -76,8 +76,9 @@ body {
     overflow-x: hidden;
     position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    margin: 0;
 }
 
 /* 浅色渐变伪元素 */
@@ -184,6 +185,10 @@ body.dark-mode::after {
     z-index: 1;
     position: relative;
     animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* 页面切换动画 */
@@ -202,10 +207,14 @@ body.dark-mode::after {
 /* 页面切换 */
 .page {
     display: none;
+    width: 100%;
 }
 
 .page.active {
     display: block;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 /* 返回按钮样式 */
@@ -247,6 +256,7 @@ body.dark-mode .back-btn:hover {
 /* 登录页面样式 */
 .login-container {
     max-width: 400px;
+    width: 100%;
     margin: 0 auto;
     padding: 40px;
     background: var(--card-bg);
@@ -791,7 +801,7 @@ body.dark-mode .settings-container:hover {
     }
 
     .login-container {
-        margin: 50px auto;
+        margin: auto;
         padding: 30px;
     }
 
@@ -883,33 +893,32 @@ body.dark-mode .empty-state {
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 30px 20px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    padding: 10px 0;
+    position: relative;
     z-index: 10;
+    margin-top: auto;
 }
 
 .icp-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 8px;
     background: var(--icp-bg);
     border: 1px solid var(--icp-border);
     color: var(--icp-text);
-    box-shadow: 0 4px 15px var(--icp-shadow);
+    box-shadow: 0 2px 10px var(--icp-shadow);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    padding: 12px 24px;
+    padding: 6px 16px;
     border-radius: 50px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease, background var(--change-speed) ease, border var(--change-border-speed) ease;
 }
 
 .icp-content:hover {
-    box-shadow: 0 6px 20px var(--icp-shadow);
-    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--icp-shadow);
+    transform: translateY(-1px);
 }
 
 .icp-item {
@@ -917,7 +926,7 @@ body.dark-mode .empty-state {
     color: inherit;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     transition: color 0.3s;
 }
 
@@ -926,14 +935,11 @@ body.dark-mode .empty-state {
 }
 
 .icp-icon {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     vertical-align: middle;
 }
 
 .divider {
-    width: 1px;
-    height: 12px;
-    background-color: var(--icp-divider);
     transition: background-color 0.5s ease;
 }

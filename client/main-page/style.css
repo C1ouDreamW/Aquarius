@@ -725,44 +725,36 @@ body.dark-mode .card-back {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding-bottom: 20px;
+  padding: 10px 0;
   position: relative;
   z-index: 10;
-}
-
-/* 如果屏幕够高，固定在底部 */
-@media (min-height: 800px) {
-  .icp-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-  }
+  margin-top: auto;
 }
 
 .icp-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
 
   background: var(--icp-bg);
   border: 1px solid var(--icp-border);
   color: var(--icp-text);
-  box-shadow: 0 4px 15px var(--icp-shadow);
+  box-shadow: 0 2px 10px var(--icp-shadow);
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-
-  padding: 10px 24px;
+  /*  */
+  padding: 6px 16px;
   border-radius: 50px;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 
   transition: transform 0.3s ease, box-shadow 0.3s ease, background var(--change-speed) ease, border var(--change-border-speed) ease;
 }
 
 .icp-content:hover {
-  box-shadow: 0 6px 20px var(--icp-shadow);
-  transform: translateY(-2px);
+  box-shadow: 0 4px 15px var(--icp-shadow);
+  transform: translateY(-1px);
 }
 
 .icp-item {
@@ -770,7 +762,7 @@ body.dark-mode .card-back {
   color: inherit;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   transition: color 0.3s;
 }
 
@@ -779,14 +771,11 @@ body.dark-mode .card-back {
 }
 
 .icp-icon {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   vertical-align: middle;
 }
 
 .divider {
-  width: 1px;
-  height: 12px;
-  background-color: var(--icp-divider);
   transition: background-color 0.5s ease;
 }
