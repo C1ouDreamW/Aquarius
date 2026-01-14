@@ -7,6 +7,8 @@ const progressBar = document.getElementById('progress-bar');
 const quizArea = document.getElementById('quiz-area');
 const resultArea = document.getElementById('result-area');
 const backBtn = document.getElementById('back-btn');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
 
 // 题目区域
 const quizTag = document.getElementById('quiz-tag');
@@ -96,6 +98,9 @@ function renderQuestion() {
     btn.onclick = () => handleOptionClick(optionId, btn);
     optionsList.appendChild(btn);
   });
+
+  // 更新导航箭头状态
+  updateNavArrows();
 }
 
 function handleOptionClick(id, btnElement) {
@@ -144,8 +149,15 @@ function submitAnswer() {
   if (isCorrect) {
     score++;
   } else {
-    // 收集错误题目
-    wrongQuestions.push(JSON.parse(JSON.stringify(currentQ)));
+    // 检查题目是否已经在错题集合中
+    const isQuestionAlreadyAdded = wrongQuestions.some(existingQ => {
+      return existingQ.id === currentQ.id;
+    });
+    // 只有当题目不在错题集合中时才添加
+    if (!isQuestionAlreadyAdded) {
+      // 收集错误题目
+      wrongQuestions.push(JSON.parse(JSON.stringify(currentQ)));
+    }
   }
 
   document.querySelectorAll('.option-btn').forEach(btn => {
@@ -248,4 +260,120 @@ wrongQuestionsBtn.addEventListener('click', () => {
   // 解析 JSON 数据
   quizData = JSON.parse(rawData);
   renderQuestion();
+});
+
+// 更新导航箭头状态
+function updateNavArrows() {
+  if (!quizData) return;
+  const totalQuestions = quizData.questions.length;
+  prevBtn.disabled = currentIndex === 0;
+  nextBtn.disabled = currentIndex === totalQuestions - 1;
+}
+
+// 导航箭头事件监听
+prevBtn.addEventListener('click', () => {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderQuestion();
+  }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (currentIndex < quizData.questions.length - 1) {
+    currentIndex++;
+    renderQuestion();
+  }
+});
+
+// 移动端滑动手势支持
+let touchStartX = 0;
+let touchCurrentX = 0;
+const SWIPE_THRESHOLD = 50; // 滑动阈值
+let isDragging = false;
+
+quizArea.addEventListener('touchstart', (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchCurrentX = touchStartX;
+  isDragging = true;
+  // 清除任何现有的过渡效果
+  quizArea.style.transition = 'none';
+});
+
+quizArea.addEventListener('touchmove', (e) => {
+  if (!isDragging) return;
+
+  touchCurrentX = e.changedTouches[0].screenX;
+  const distance = touchCurrentX - touchStartX;
+
+  // 实时更新卡片位置
+  quizArea.style.transform = `translateX(${distance}px)`;
+  quizArea.style.opacity = 1 - Math.abs(distance) / 300;
+});
+
+quizArea.addEventListener('touchend', (e) => {
+  if (!isDragging) return;
+
+  isDragging = false;
+  const swipeDistance = touchCurrentX - touchStartX;
+
+  // 重置过渡效果
+  quizArea.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+
+  // 向右滑动（上一题）
+  if (swipeDistance > SWIPE_THRESHOLD && currentIndex > 0) {
+    // 1. 当前卡片向右滑出
+    quizArea.style.transform = 'translateX(100%)';
+    quizArea.style.opacity = 0;
+
+    // 2. 等待滑出动画完成后，加载新题目并从左侧滑入
+    setTimeout(() => {
+      currentIndex--;
+      renderQuestion();
+
+      // 重置过渡效果
+      quizArea.style.transition = 'none';
+      // 新卡片初始位置在左侧
+      quizArea.style.transform = 'translateX(-100%)';
+      quizArea.style.opacity = 0;
+
+      // 触发回流
+      void quizArea.offsetWidth;
+
+      // 启用过渡并执行滑入动画
+      quizArea.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      quizArea.style.transform = 'translateX(0)';
+      quizArea.style.opacity = 1;
+    }, 300);
+  }
+  // 向左滑动（下一题）
+  else if (swipeDistance < -SWIPE_THRESHOLD && currentIndex < quizData.questions.length - 1) {
+    // 1. 当前卡片向左滑出
+    quizArea.style.transform = 'translateX(-100%)';
+    quizArea.style.opacity = 0;
+
+    // 2. 等待滑出动画完成后，加载新题目并从右侧滑入
+    setTimeout(() => {
+      currentIndex++;
+      renderQuestion();
+
+      // 重置过渡效果
+      quizArea.style.transition = 'none';
+      // 新卡片初始位置在右侧
+      quizArea.style.transform = 'translateX(100%)';
+      quizArea.style.opacity = 0;
+
+      // 触发回流
+      void quizArea.offsetWidth;
+
+      // 启用过渡并执行滑入动画
+      quizArea.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      quizArea.style.transform = 'translateX(0)';
+      quizArea.style.opacity = 1;
+    }, 300);
+  }
+  // 未达到阈值，回弹
+  else {
+    quizArea.style.transform = 'translateX(0)';
+    quizArea.style.opacity = 1;
+  }
 });
