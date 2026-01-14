@@ -856,11 +856,20 @@ body.dark-mode .option-btn {
   border-color: rgba(59, 130, 246, 0.3);
 }
 
-/* 选中状态 */
-.option-btn.selected {
+body.dark-mode .option-btn:not(:disabled):hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* 选中状态 - 增加特异性以覆盖悬停状态 */
+.option-btn.selected:not(:disabled) {
   border-color: #3b82f6;
   background: rgba(59, 130, 246, 0.1);
   color: #2563eb;
+}
+
+body.dark-mode .option-btn.selected:not(:disabled) {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
 }
 
 /* 正确答案状态 */
