@@ -22,12 +22,14 @@ const finalScorePercent = document.getElementById('final-score-percent');
 const finalScoreText = document.getElementById('final-score-text');
 const resultCategory = document.getElementById('result-category');
 const restartBtn = document.getElementById('restart-btn');
+const wrongQuestionsBtn = document.getElementById('wrong-questions-btn');
 
 let quizData = null;
 let currentIndex = 0;
 let score = 0;
 let selectedOptionIds = new Set();
 let isAnswered = false;
+let wrongQuestions = [];
 
 // 返回按钮事件监听
 backBtn.addEventListener('click', () => {
@@ -35,12 +37,15 @@ backBtn.addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+  localStorage.removeItem('wrong_quiz_data');
+  wrongQuestions = [];
   const rawData = localStorage.getItem('current_quiz_data');
   if (!rawData) {
     alert("未找到练习数据，请返回首页重新开始");
     window.location.href = 'index.html';
     return;
   }
+  // 解析 JSON 数据
   quizData = JSON.parse(rawData);
   renderQuestion();
 });
@@ -136,7 +141,12 @@ function submitAnswer() {
   const isCorrect = selectedArray.length === correctIds.length &&
     selectedArray.every(id => correctIds.includes(id));
 
-  if (isCorrect) score++;
+  if (isCorrect) {
+    score++;
+  } else {
+    // 收集错误题目
+    wrongQuestions.push(JSON.parse(JSON.stringify(currentQ)));
+  }
 
   document.querySelectorAll('.option-btn').forEach(btn => {
     const optId = btn.dataset.id;
@@ -178,6 +188,18 @@ function showResults() {
   quizArea.style.display = 'none';
   resultArea.style.display = 'block';
 
+  // 判断是否有错题
+  if (wrongQuestions.length > 0) {
+    wrongQuestionsBtn.textContent = '📝进入错题集';
+    wrongQuestionsBtn.style.backgroundColor = '#ff6b6b';
+    wrongQuestionsBtn.disabled = false;
+  } else {
+    wrongQuestionsBtn.textContent = '✔️暂无错题';
+    wrongQuestionsBtn.style.backgroundColor = 'gray';
+    // 变为不可点击
+    wrongQuestionsBtn.disabled = true;
+  }
+
   // 显示类别和章节信息
   if (quizData.questions.length > 0) {
     const firstQuestion = quizData.questions[0];
@@ -186,15 +208,44 @@ function showResults() {
 
   finalScorePercent.textContent = `${percent}%`;
   finalScoreText.textContent = `${score} / ${total} 答对`;
+
+  // 存储错误题目到localStorage
+  if (wrongQuestions.length > 0) {
+    const wrongQuizData = {
+      questions: wrongQuestions
+    };
+    localStorage.setItem('wrong_quiz_data', JSON.stringify(wrongQuizData));
+  } else {
+    // 如果没有错误题目，清空存储
+    localStorage.removeItem('wrong_quiz_data');
+  }
 }
 
 // 重新开始
 restartBtn.addEventListener('click', () => {
   currentIndex = 0;
   score = 0;
+  wrongQuestions = [];
+  localStorage.removeItem('wrong_quiz_data');
+  resultArea.style.display = 'none';
+  quizArea.style.display = 'flex';
+  renderQuestion();
+});
 
+wrongQuestionsBtn.addEventListener('click', () => {
+  currentIndex = 0;
+  score = 0;
   resultArea.style.display = 'none';
   quizArea.style.display = 'flex';
 
+  const rawData = localStorage.getItem('wrong_quiz_data');
+  if (!rawData) {
+    alert(`未找到错误练习数据，错题数为${wrongQuestions.length}`);
+    return;
+  }
+  localStorage.removeItem('wrong_quiz_data');
+  wrongQuestions = [];
+  // 解析 JSON 数据
+  quizData = JSON.parse(rawData);
   renderQuestion();
 });

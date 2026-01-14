@@ -97,7 +97,7 @@ async function renderCategories(categories) {
                 </div>
                 <div class="category-toggle" aria-hidden="true">▼</div>
             </div>
-            <div class="chapter-list" id="chapter-list-${cat.id}" style="display:none;" role="list">
+            <div class="chapter-list" id="chapter-list-${cat.id}" role="list">
                 ${categoryChapters.length === 0
         ? '<div class="chapter-item no-chapters">暂无章节</div>'
         : categoryChapters.map(chapter => `
@@ -128,15 +128,13 @@ window.toggleCategory = (element) => {
   const toggleIcon = element.querySelector('.category-toggle');
 
   // 切换显示状态
-  if (chapterList.style.display === 'none') {
-    chapterList.style.display = 'block';
+  if (!chapterList.classList.contains('expanded')) {
+    chapterList.classList.add('expanded');
     toggleIcon.textContent = '▲';
-    // 添加展开动画
-    chapterList.style.animation = 'slideDown 0.3s ease forwards';
     // 更新 ARIA 属性
     element.setAttribute('aria-expanded', 'true');
   } else {
-    chapterList.style.display = 'none';
+    chapterList.classList.remove('expanded');
     toggleIcon.textContent = '▼';
     // 更新 ARIA 属性
     element.setAttribute('aria-expanded', 'false');
