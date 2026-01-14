@@ -6,6 +6,7 @@ initTransitions();
 // 获取 DOM 元素
 const categoryTitle = document.getElementById('category-title');
 const infoBanner = document.getElementById('info-banner');
+const infoTextCategory = document.getElementById('info-text-category');
 const infoTextCount = document.getElementById('info-text-count');
 const startBtn = document.getElementById('start-btn');
 const countSlider = document.getElementById('count-slider');
@@ -77,6 +78,7 @@ async function loadQuestions(chapterName) {
     });
 
     infoBanner.style.display = 'flex';
+    infoTextCategory.textContent = `${currentCategoryName}`;
     infoTextCount.textContent = `该分类已有 ${allQuestions.length} 道题目`;
 
     if (allQuestions.length === 0) {

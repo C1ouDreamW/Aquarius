@@ -20,6 +20,7 @@ const actionBtn = document.getElementById('action-btn');
 // 结果区域
 const finalScorePercent = document.getElementById('final-score-percent');
 const finalScoreText = document.getElementById('final-score-text');
+const resultCategory = document.getElementById('result-category');
 const restartBtn = document.getElementById('restart-btn');
 
 let quizData = null;
@@ -60,7 +61,7 @@ function renderQuestion() {
   progressBar.style.width = `${progress}%`;
 
   const typeText = currentQ.type === 'single_choice' ? '单选' : '多选';
-  quizTag.textContent = `${currentQ.category} · ${typeText}`;
+  quizTag.textContent = `${currentQ.category} · ${currentQ.chapter} · ${typeText}`;
   quizCounter.textContent = `${currentIndex + 1} / ${questions.length}`;
 
   questionText.textContent = currentQ.text;
@@ -176,6 +177,12 @@ function showResults() {
   // 隐藏答题区，显示结果区
   quizArea.style.display = 'none';
   resultArea.style.display = 'block';
+
+  // 显示类别和章节信息
+  if (quizData.questions.length > 0) {
+    const firstQuestion = quizData.questions[0];
+    resultCategory.textContent = `${firstQuestion.category} · ${firstQuestion.chapter}`;
+  }
 
   finalScorePercent.textContent = `${percent}%`;
   finalScoreText.textContent = `${score} / ${total} 答对`;

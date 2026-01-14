@@ -144,6 +144,16 @@ select {
   color: #1e3a8a;
 }
 
+
+.info-banner .info-main-text {
+  display: flex;
+  align-items: center;
+}
+
+.info-banner .separator {
+  margin: 0 4px;
+}
+
 .info-banner .sub-text {
   font-size: 0.85rem;
   opacity: 0.7;
@@ -762,6 +772,12 @@ body.dark-mode .option-btn {
   padding: 40px 20px;
   max-width: 500px;
   margin: 0 auto;
+}
+
+.result-category {
+  font-size: 0.9rem;
+  color: var(--text-sub);
+  margin-bottom: 10px;
 }
 
 .result-icon {
