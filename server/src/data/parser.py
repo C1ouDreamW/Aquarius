@@ -140,7 +140,7 @@ class JsonToSqliteImporter:
                 
                 success_count += 1
                 if idx % 10 == 0:
-                    print(f"🔄 已导入 {idx}/{total} 题")
+                    print(f"🔄 已导入 {idx}/{total} 题...")
                 
             except Exception as e:
                 error_count += 1
