@@ -16,6 +16,15 @@ class JsonToSqliteImporter:
         self.db_path = 'database.sqlite'
         self.conn = None
         self.cursor = None
+        # 新增：是否使用同一类别和章节的标志
+        self.use_same_category = False
+        self.same_category_name = None
+        self.same_category_id = None
+        self.use_same_chapter = False
+        self.same_chapter_name = None
+        self.same_chapter_id = None
+        # 新增：是否自动开始下一个文件的标志
+        self.auto_next_file = False
     
     def connect_db(self):
         """连接数据库"""
@@ -172,28 +181,40 @@ class JsonToSqliteImporter:
             print(f"❌ 读取文件失败: {e}")
             return False
         
-        # 获取用户输入的类别和章节
-        category_name = input("请输入题目类别: ")
-        if not category_name.strip():
-            print("❌ 类别不能为空")
-            return False
+        # 处理类别和章节的输入
+        if self.use_same_category:
+            # 使用统一类别
+            category_name = self.same_category_name
+            category_id = self.same_category_id
+            print(f"ℹ️  使用统一类别: '{category_name}'")
+        else:
+            # 每个文件询问类别
+            category_name = input("请输入题目类别: ")
+            if not category_name.strip():
+                print("❌ 类别不能为空")
+                return False
+            # 确保类别存在
+            category_result = self.ensure_category_exists(category_name)
+            if not category_result:
+                return False
+            category_id, category_name = category_result
         
-        chapter_name = input("请输入题目章节: ")
-        if not chapter_name.strip():
-            print("❌ 章节不能为空")
-            return False
-        
-        # 确保类别存在
-        category_result = self.ensure_category_exists(category_name)
-        if not category_result:
-            return False
-        category_id, category_name = category_result
-        
-        # 确保章节存在
-        chapter_result = self.ensure_chapter_exists(category_name, chapter_name)
-        if not chapter_result:
-            return False
-        chapter_id, chapter_name = chapter_result
+        if self.use_same_chapter:
+            # 使用统一章节
+            chapter_name = self.same_chapter_name
+            chapter_id = self.same_chapter_id
+            print(f"ℹ️  使用统一章节: '{chapter_name}'")
+        else:
+            # 每个文件询问章节
+            chapter_name = input("请输入题目章节: ")
+            if not chapter_name.strip():
+                print("❌ 章节不能为空")
+                return False
+            # 确保章节存在
+            chapter_result = self.ensure_chapter_exists(category_name, chapter_name)
+            if not chapter_result:
+                return False
+            chapter_id, chapter_name = chapter_result
         
         # 导入题目
         success_count = self.import_questions(category_id, chapter_id, category_name, chapter_name, questions, filename)
@@ -224,6 +245,48 @@ class JsonToSqliteImporter:
             for i, filename in enumerate(json_files, 1):
                 print(f"   {i}. {filename}")
             
+            # 新增：询问是否使用同一类别
+            same_category_input = input("\n是否使用同一个类别？(y/n): ")
+            if same_category_input.lower() == 'y':
+                self.use_same_category = True
+                self.same_category_name = input("请输入统一使用的类别名称: ")
+                if not self.same_category_name.strip():
+                    print("❌ 类别不能为空")
+                    return
+                # 确保类别存在
+                category_result = self.ensure_category_exists(self.same_category_name)
+                if not category_result:
+                    return
+                self.same_category_id, self.same_category_name = category_result
+            
+            # 新增：询问是否使用同一章节
+            same_chapter_input = input("\n是否使用同一个章节？(y/n): ")
+            if same_chapter_input.lower() == 'y':
+                self.use_same_chapter = True
+                # 如果使用同一类别，直接使用该类别；否则需要先询问类别
+                if self.use_same_category:
+                    chapter_category_name = self.same_category_name
+                else:
+                    chapter_category_name = input("请输入章节所属的类别名称: ")
+                    if not chapter_category_name.strip():
+                        print("❌ 类别不能为空")
+                        return
+                self.same_chapter_name = input("请输入统一使用的章节名称: ")
+                if not self.same_chapter_name.strip():
+                    print("❌ 章节不能为空")
+                    return
+                # 确保章节存在
+                chapter_result = self.ensure_chapter_exists(chapter_category_name, self.same_chapter_name)
+                if not chapter_result:
+                    return
+                self.same_chapter_id, self.same_chapter_name = chapter_result
+            
+            # 新增：询问是否自动开始下一个文件
+            auto_next_input = input("\n是否自动开始下一个文件？(y/n): ")
+            if auto_next_input.lower() == 'y':
+                self.auto_next_file = True
+                print("ℹ️  将自动开始处理下一个文件")
+            
             # 按顺序处理每个文件
             for filename in json_files:
                 filepath = os.path.join(self.json_dir, filename)
@@ -231,10 +294,15 @@ class JsonToSqliteImporter:
                 
                 # 询问是否继续
                 if filename != json_files[-1]:
-                    continue_input = input("\n是否继续处理下一个文件？(y/n): ")
-                    if continue_input.lower() != 'y':
-                        print("🛑 用户取消操作")
-                        break
+                    if self.auto_next_file:
+                        # 自动开始下一个文件
+                        print("\n🔄 自动开始处理下一个文件...")
+                    else:
+                        # 询问用户是否继续
+                        continue_input = input("\n是否继续处理下一个文件？(y/n): ")
+                        if continue_input.lower() != 'y':
+                            print("🛑 用户取消操作")
+                            break
             
             print("\n🎉 导入流程完成！")
             
