@@ -32,6 +32,7 @@ let score = 0;
 let selectedOptionIds = new Set();
 let isAnswered = false;
 let wrongQuestions = [];
+let rightQuestions = [];
 
 // 返回按钮事件监听
 backBtn.addEventListener('click', () => {
@@ -147,7 +148,9 @@ function submitAnswer() {
     selectedArray.every(id => correctIds.includes(id));
 
   if (isCorrect) {
-    score++;
+    // 添加正确答案的id
+    rightQuestions.push(currentQ.id);
+    score = rightQuestions.length;
   } else {
     // 检查题目是否已经在错题集合中
     const isQuestionAlreadyAdded = wrongQuestions.some(existingQ => {
