@@ -148,9 +148,15 @@ function submitAnswer() {
     selectedArray.every(id => correctIds.includes(id));
 
   if (isCorrect) {
-    // 添加正确答案的id
-    rightQuestions.push(currentQ.id);
-    score = rightQuestions.length;
+    // 检查题目是否已经在正确答案集合中
+    const isQuestionAlreadyAdded = rightQuestions.some(existingQ => {
+      return existingQ.id === currentQ.id;
+    });
+    // 只有当题目不在正确答案集合中时才添加
+    if (!isQuestionAlreadyAdded) {
+      rightQuestions.push(currentQ.id);
+      score = rightQuestions.length;
+    }
   } else {
     // 检查题目是否已经在错题集合中
     const isQuestionAlreadyAdded = wrongQuestions.some(existingQ => {
