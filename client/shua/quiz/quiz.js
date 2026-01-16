@@ -28,11 +28,10 @@ const wrongQuestionsBtn = document.getElementById('wrong-questions-btn');
 
 let quizData = null;
 let currentIndex = 0;
-let score = 0;
 let selectedOptionIds = new Set();
 let isAnswered = false;
 let wrongQuestions = [];
-let rightQuestions = [];
+let rightQuestionsID = [];
 
 // 返回按钮事件监听
 backBtn.addEventListener('click', () => {
@@ -148,16 +147,32 @@ function submitAnswer() {
     selectedArray.every(id => correctIds.includes(id));
 
   if (isCorrect) {
+    // 检查是否在错题集中，若存在则将此题从错题集中删除
+    // indexOf() 方法返回第一个匹配元素的索引，若不存在则返回 -1
+    // wrongQuestions存储的是题目对象，currentQ是当前题目对象
+    // 通过对象的id值来查找是否存在于错题集中
+    const index = wrongQuestions.findIndex(q => q.id === currentQ.id);
+    if (index !== -1) {
+      // splice(index, 1) 从 index 开始删除 1 个元素
+      wrongQuestions.splice(index, 1);
+    }
     // 检查题目是否已经在正确答案集合中
-    const isQuestionAlreadyAdded = rightQuestions.some(existingQ => {
-      return existingQ.id === currentQ.id;
+    const isQuestionAlreadyAdded = rightQuestionsID.some(existingQ => {
+      return existingQ === currentQ.id;
     });
     // 只有当题目不在正确答案集合中时才添加
     if (!isQuestionAlreadyAdded) {
-      rightQuestions.push(currentQ.id);
-      score = rightQuestions.length;
+      rightQuestionsID.push(currentQ.id);
+
     }
   } else {
+    // 检查是否在正确集中，若存在则将此题从正确集中删除
+    const index = rightQuestionsID.indexOf(currentQ.id);
+    if (index !== -1) {
+      // splice(index, 1) 从 index 开始删除 1 个元素
+      rightQuestionsID.splice(index, 1);
+    }
+
     // 检查题目是否已经在错题集合中
     const isQuestionAlreadyAdded = wrongQuestions.some(existingQ => {
       return existingQ.id === currentQ.id;
@@ -200,6 +215,7 @@ function nextQuestion() {
 
 function showResults() {
   const total = quizData.questions.length;
+  const score = rightQuestionsID.length;
   const percent = Math.round((score / total) * 100);
 
   // 填满进度条
@@ -245,7 +261,6 @@ function showResults() {
 // 重新开始
 restartBtn.addEventListener('click', () => {
   currentIndex = 0;
-  score = 0;
   wrongQuestions = [];
   localStorage.removeItem('wrong_quiz_data');
   resultArea.style.display = 'none';
@@ -255,7 +270,6 @@ restartBtn.addEventListener('click', () => {
 
 wrongQuestionsBtn.addEventListener('click', () => {
   currentIndex = 0;
-  score = 0;
   resultArea.style.display = 'none';
   quizArea.style.display = 'flex';
 
