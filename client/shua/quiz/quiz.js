@@ -262,6 +262,7 @@ function showResults() {
 restartBtn.addEventListener('click', () => {
   currentIndex = 0;
   wrongQuestions = [];
+  rightQuestionsID = [];
   localStorage.removeItem('wrong_quiz_data');
   resultArea.style.display = 'none';
   quizArea.style.display = 'flex';
@@ -272,7 +273,7 @@ wrongQuestionsBtn.addEventListener('click', () => {
   currentIndex = 0;
   resultArea.style.display = 'none';
   quizArea.style.display = 'flex';
-
+  rightQuestionsID = [];
   const rawData = localStorage.getItem('wrong_quiz_data');
   if (!rawData) {
     alert(`未找到错误练习数据，错题数为${wrongQuestions.length}`);
