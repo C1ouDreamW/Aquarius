@@ -54,34 +54,23 @@
 
     <div class="bento-grid">
 
-      <span class="card card-tech">
+      <span class="card card-tech" role="region" aria-label="技术栈展示，包含多个滚动轨道">
         <div class="tech-header">
           <h3>技术栈 / Tech Stack</h3>
           <div class="tech-dot"></div>
         </div>
-        <div class="tech-grid">
-          <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/godot/godot-original.svg" alt="Godot"
-              class="tech-icon">
+        <div class="tech-marquee-container" aria-hidden="true">
+          <div class="tech-marquee-track track-1">
+            <div class="tech-marquee-content">
+            </div>
           </div>
-          <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg" alt="Vue.js"
-              class="tech-icon">
+          <div class="tech-marquee-track track-2">
+            <div class="tech-marquee-content">
+            </div>
           </div>
-          <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" alt="Go" class="tech-icon">
-          </div>
-          <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python"
-              class="tech-icon">
-          </div>
-          <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js"
-              class="tech-icon">
-          </div>
-          <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux"
-              class="tech-icon">
+          <div class="tech-marquee-track track-3">
+            <div class="tech-marquee-content">
+            </div>
           </div>
         </div>
       </span>
@@ -185,6 +174,7 @@
   </footer>
 
   <script src="./script.js"></script>
+  <script src="./techStack.js"></script>
 
 </body>
 

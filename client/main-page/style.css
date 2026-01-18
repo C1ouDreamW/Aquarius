@@ -284,6 +284,8 @@ header p {
   border: 1px solid var(--card-border);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
 
 /* 技术栈卡片头部 */
@@ -292,6 +294,8 @@ header p {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding: 0 20px;
+  z-index: 2;
 }
 
 .tech-header h3 {
@@ -307,13 +311,44 @@ header p {
   background-color: var(--text-sub);
 }
 
-/* 技术栈图标网格 */
-.tech-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 15px;
+/* 无限滚动容器 */
+.tech-marquee-container {
   flex: 1;
+  overflow: hidden;
+  position: relative;
+  padding: 0 20px;
+}
+
+/* 滚动轨道 */
+.tech-marquee-track {
+  position: relative;
+  height: 33.33%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+/* 滚动内容 */
+.tech-marquee-content {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: max-content;
+}
+
+/* 轨道1：向左滚动 */
+.track-1 .tech-marquee-content {
+  animation: scrollLeft 20s linear infinite;
+}
+
+/* 轨道2：向右滚动 */
+.track-2 .tech-marquee-content {
+  animation: scrollRight 25s linear infinite;
+}
+
+/* 轨道3：向左滚动，速度不同 */
+.track-3 .tech-marquee-content {
+  animation: scrollLeft 15s linear infinite;
 }
 
 /* 技术栈图标项 */
@@ -324,13 +359,11 @@ header p {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  margin-right: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.tech-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  min-width: 100px;
+  height: 100px;
+  flex-shrink: 0;
 }
 
 /* 技术栈图标 */
@@ -340,11 +373,49 @@ header p {
   object-fit: contain;
 }
 
+
+/* 动画定义 - 精确无缝循环 */
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scrollRight {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* 悬停交互 */
+.card-tech:hover .tech-marquee-content {
+  animation-play-state: paused;
+}
+
+/* 深色模式下的边缘遮罩调整 */
+body.dark-mode .tech-mask.left {
+  background: linear-gradient(to right, var(--card-bg), transparent);
+}
+
+body.dark-mode .tech-mask.right {
+  background: linear-gradient(to left, var(--card-bg), transparent);
+}
+
 /* 响应式调整 */
 @media (max-width: 768px) {
-  .tech-grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+  .tech-item {
+    min-width: 80px;
+    height: 80px;
+    padding: 15px;
+    margin-right: 10px;
   }
 
   .tech-icon {
@@ -352,14 +423,17 @@ header p {
     height: 50px;
   }
 
-  .tech-item {
-    padding: 15px;
+  .tech-header h3 {
+    font-size: 1.3rem;
   }
 }
 
 @media (max-width: 480px) {
-  .tech-grid {
-    gap: 10px;
+  .tech-item {
+    min-width: 70px;
+    height: 70px;
+    padding: 12px;
+    margin-right: 8px;
   }
 
   .tech-icon {
@@ -367,12 +441,8 @@ header p {
     height: 40px;
   }
 
-  .tech-item {
-    padding: 12px;
-  }
-
-  .tech-header h3 {
-    font-size: 1.3rem;
+  .tech-mask {
+    width: 15%;
   }
 }
 
