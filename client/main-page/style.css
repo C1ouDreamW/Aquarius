@@ -26,6 +26,11 @@
   /* 新增：单独定义浅色/深色渐变（方便伪元素调用） */
   --gradient-light: linear-gradient(to bottom, #e0f2fe, #f0f9ff);
   --gradient-dark: linear-gradient(to bottom, #0f172a, #1e293b);
+  /* 技术栈卡片颜色变量 */
+  --card-bg-light: rgba(255, 255, 255, 0.6);
+  --card-bg-dark: rgba(30, 41, 59, 0.7);
+  --tech-item-bg: #f3f4f6;
+  --tech-item-bg-dark: #334155;
 }
 
 /* --- 深色模式 - 当 body 拥有 .dark-mode 类时生效 --- */
@@ -48,6 +53,8 @@ body.dark-mode {
   --icp-text-hover: #60a5fa;
   --icp-divider: #475569;
   --icp-shadow: rgba(0, 0, 0, 0.3);
+  /* 技术栈卡片深色模式变量 */
+  --tech-item-bg: #334155;
 }
 
 /* =========================================
@@ -268,25 +275,105 @@ header p {
   margin-bottom: 15px;
 }
 
-/* 个人介绍卡片 (特殊处理) */
-.card-profile {
+/* 技术栈卡片样式 */
+.card-tech {
   grid-column: span 2;
   grid-row: span 2;
-  /* 保持原来的渐变，不受深浅模式变量影响，保持品牌色 */
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  color: white !important;
-  border: none;
+  background: var(--card-bg);
+  color: var(--text-main);
+  border: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
 }
 
-.card-profile p {
-  color: rgba(255, 255, 255, 0.9) !important;
+/* 技术栈卡片头部 */
+.tech-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-/* 修复之前的悬停问题 */
-.card-profile:hover {
-  background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
-  color: white !important;
-  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.5);
+.tech-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.tech-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-sub);
+}
+
+/* 技术栈图标网格 */
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 15px;
+  flex: 1;
+}
+
+/* 技术栈图标项 */
+.tech-item {
+  background: var(--tech-item-bg);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tech-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* 技术栈图标 */
+.tech-icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .tech-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  .tech-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .tech-item {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tech-grid {
+    gap: 10px;
+  }
+
+  .tech-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .tech-item {
+    padding: 12px;
+  }
+
+  .tech-header h3 {
+    font-size: 1.3rem;
+  }
 }
 
 .card-blog {
@@ -298,7 +385,7 @@ header p {
     grid-template-columns: 1fr;
   }
 
-  .card-profile,
+  .card-tech,
   .card-blog {
     grid-column: span 1;
   }
@@ -405,7 +492,7 @@ header p {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .card-profile {
+  .card-tech {
     grid-column: span 2;
     grid-row: span 2;
   }
