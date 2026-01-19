@@ -96,20 +96,42 @@ function renderTechStack() {
     animations.push(animation);
   });
 
-  // 添加悬停交互
+  // 添加交互效果：桌面端鼠标悬停，移动端点击切换
   const cardTech = document.querySelector('.card-tech');
   if (cardTech) {
-    cardTech.addEventListener('mouseenter', () => {
+    // 状态变量：跟踪动画是否处于慢速状态
+    let isSlow = false;
+
+    // 切换动画速度函数
+    const toggleAnimationSpeed = () => {
+      isSlow = !isSlow;
+      animations.forEach(anim => {
+        anim.playbackRate = isSlow ? 0.5 : 1; // 切换速度
+      });
+    };
+
+    // 慢速播放动画函数
+    const slowDownAnimations = () => {
+      isSlow = true;
       animations.forEach(anim => {
         anim.playbackRate = 0.5; // 慢速流动
       });
-    });
+    };
 
-    cardTech.addEventListener('mouseleave', () => {
+    // 恢复正常速度函数
+    const restoreNormalSpeed = () => {
+      isSlow = false;
       animations.forEach(anim => {
         anim.playbackRate = 1; // 恢复正常速度
       });
-    });
+    };
+
+    // 桌面端：鼠标悬停效果
+    cardTech.addEventListener('mouseenter', slowDownAnimations);
+    cardTech.addEventListener('mouseleave', restoreNormalSpeed);
+
+    // 移动端：点击切换效果
+    cardTech.addEventListener('click', toggleAnimationSpeed);
   }
 }
 
