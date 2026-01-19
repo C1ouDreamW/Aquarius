@@ -24,6 +24,9 @@ function renderTechStack() {
   // 获取所有轨道容器
   const tracks = document.querySelectorAll('.tech-marquee-track');
 
+  // 存储所有动画实例
+  const animations = [];
+
   // 为每个轨道渲染图标
   tracks.forEach((track, index) => {
     // 获取当前轨道的内容容器
@@ -53,8 +56,62 @@ function renderTechStack() {
       // 将容器添加到轨道内容中
       content.appendChild(techItem);
     });
+
+    // 创建动画
+    let keyframes, options;
+
+    // 根据轨道索引设置不同方向
+    if (index === 1) {
+      // 第二行向右滚动
+      keyframes = [
+        { transform: 'translateX(-50%)' },
+        { transform: 'translateX(0)' }
+      ];
+    } else {
+      // 第一行和第三行向左滚动
+      keyframes = [
+        { transform: 'translateX(0)' },
+        { transform: 'translateX(-50%)' }
+      ];
+    }
+
+    // 根据轨道索引设置不同速度
+    let duration;
+    if (index === 0) {
+      duration = 40000;
+    } else if (index === 2) {
+      duration = 20000;
+    } else {
+      duration = 30000;
+    }
+
+    options = {
+      duration: duration,
+      iterations: Infinity, // 无限循环
+      easing: 'linear' // 匀速运动
+    };
+
+    // 创建并播放动画
+    const animation = content.animate(keyframes, options);
+    animations.push(animation);
   });
+
+  // 添加悬停交互
+  const cardTech = document.querySelector('.card-tech');
+  if (cardTech) {
+    cardTech.addEventListener('mouseenter', () => {
+      animations.forEach(anim => {
+        anim.playbackRate = 0.5; // 慢速流动
+      });
+    });
+
+    cardTech.addEventListener('mouseleave', () => {
+      animations.forEach(anim => {
+        anim.playbackRate = 1; // 恢复正常速度
+      });
+    });
+  }
 }
 
-// 页面加载完成后渲染技术栈图标
+// 页面加载完成后渲染图标
 document.addEventListener('DOMContentLoaded', renderTechStack);

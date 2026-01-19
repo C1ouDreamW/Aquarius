@@ -336,31 +336,18 @@ header p {
   width: max-content;
 }
 
-/* 轨道1：向左滚动 */
-.track-1 .tech-marquee-content {
-  animation: scrollLeft 20s linear infinite;
-}
 
-/* 轨道2：向右滚动 */
-.track-2 .tech-marquee-content {
-  animation: scrollRight 25s linear infinite;
-}
-
-/* 轨道3：向左滚动，速度不同 */
-.track-3 .tech-marquee-content {
-  animation: scrollLeft 15s linear infinite;
-}
 
 /* 技术栈图标项 */
 .tech-item {
-  background: var(--tech-item-bg);
+  background: transparent;
   border-radius: 12px;
   padding: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
   min-width: 100px;
   height: 100px;
   flex-shrink: 0;
@@ -374,31 +361,9 @@ header p {
 }
 
 
-/* 动画定义 - 精确无缝循环 */
-@keyframes scrollLeft {
-  0% {
-    transform: translateX(0);
-  }
 
-  100% {
-    transform: translateX(-50%);
-  }
-}
 
-@keyframes scrollRight {
-  0% {
-    transform: translateX(-50%);
-  }
 
-  100% {
-    transform: translateX(0);
-  }
-}
-
-/* 悬停交互 */
-.card-tech:hover .tech-marquee-content {
-  animation-play-state: paused;
-}
 
 /* 深色模式下的边缘遮罩调整 */
 body.dark-mode .tech-mask.left {
