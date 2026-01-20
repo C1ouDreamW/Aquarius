@@ -99,6 +99,13 @@ function renderQuestion() {
     optionsList.appendChild(btn);
   });
 
+  // 触发MathJax渲染题目和选项中的公式
+  if (window.MathJax) {
+    MathJax.typesetPromise([questionText, optionsList]).catch(err => {
+      console.error('MathJax渲染错误:', err);
+    });
+  }
+
   // 更新导航箭头状态
   updateNavArrows();
 }
@@ -202,6 +209,13 @@ function submitAnswer() {
 
   explanationText.textContent = currentQ.explanation || "暂无解析";
   feedbackArea.style.display = 'block';
+
+  // 触发MathJax渲染解析中的公式
+  if (window.MathJax) {
+    MathJax.typesetPromise([explanationText]).catch(err => {
+      console.error('MathJax渲染错误:', err);
+    });
+  }
 
   const isLast = currentIndex === quizData.questions.length - 1;
   actionBtn.textContent = isLast ? '查看结果' : '下一题 ➡️';
