@@ -101,9 +101,14 @@ function renderQuestion() {
 
   // 触发MathJax渲染题目和选项中的公式
   if (window.MathJax) {
-    MathJax.typesetPromise([questionText, optionsList]).catch(err => {
-      console.error('MathJax渲染错误:', err);
-    });
+    if (typeof MathJax.typesetPromise === 'function') {
+      MathJax.typesetPromise([questionText, optionsList]).catch(err => {
+        console.error('MathJax渲染错误:', err);
+      });
+    } else if (typeof MathJax.typeset === 'function') {
+      // 回退到使用typeset方法
+      MathJax.typeset([questionText, optionsList]);
+    }
   }
 
   // 更新导航箭头状态
@@ -212,9 +217,14 @@ function submitAnswer() {
 
   // 触发MathJax渲染解析中的公式
   if (window.MathJax) {
-    MathJax.typesetPromise([explanationText]).catch(err => {
-      console.error('MathJax渲染错误:', err);
-    });
+    if (typeof MathJax.typesetPromise === 'function') {
+      MathJax.typesetPromise([explanationText]).catch(err => {
+        console.error('MathJax渲染错误:', err);
+      });
+    } else if (typeof MathJax.typeset === 'function') {
+      // 回退到使用typeset方法
+      MathJax.typeset([explanationText]);
+    }
   }
 
   const isLast = currentIndex === quizData.questions.length - 1;
