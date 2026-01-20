@@ -352,12 +352,11 @@ saveQBtn.addEventListener('click', async () => {
   saveQBtn.disabled = true;
 
   try {
-    // 采用 "类别名称-章节名称" 的格式存储分类信息
-    const categoryWithChapter = `${category}-${chapter}`;
 
     const newQuestion = {
       id: crypto.randomUUID(),
-      category: categoryWithChapter,
+      category,
+      chapter,
       type,
       text,
       options: createQOptions,
