@@ -973,6 +973,81 @@ body.dark-mode .option-btn.selected:not(:disabled) {
   }
 }
 
+/* MathJax Toast 组件样式 */
+.mathjax-toast {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.mathjax-toast-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  background: rgba(59, 130, 246, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 24px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-main);
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(-10px) translateX(-50%);
+  pointer-events: none;
+}
+
+body.dark-mode .mathjax-toast-content {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.mathjax-toast-icon {
+  font-size: 1.1rem;
+  animation: pulse 1.5s infinite;
+}
+
+.mathjax-toast-text {
+  white-space: nowrap;
+}
+
+/* Toast 显示状态 */
+.mathjax-toast.show .mathjax-toast-content {
+  opacity: 1;
+  transform: translateY(0) translateX(-50%);
+}
+
+/* Toast 隐藏状态 */
+.mathjax-toast.hidden .mathjax-toast-content {
+  opacity: 0;
+  transform: translateY(-20px) translateX(-50%);
+}
+
+/* 脉冲动画 */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
 /* =========================================
    新增：顶部统一导航栏
    ========================================= */

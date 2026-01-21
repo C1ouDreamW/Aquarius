@@ -32,6 +32,8 @@ let selectedOptionIds = new Set();
 let isAnswered = false;
 let wrongQuestions = [];
 let rightQuestionsID = [];
+// 添加标志位，记录MathJax是否已加载完成
+let isMathJaxLoaded = false;
 
 // 返回按钮事件监听
 backBtn.addEventListener('click', () => {
@@ -49,8 +51,103 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   // 解析 JSON 数据
   quizData = JSON.parse(rawData);
+
+  // 非阻塞式加载：立即渲染题目内容，不需要等待MathJax
   renderQuestion();
+
+  // 检测当前题目是否包含数学公式
+  const currentQ = quizData.questions[currentIndex];
+  if (containsMathFormulas(currentQ)) {
+    // 显示MathJax加载Toast
+    showMathJaxToast();
+
+    // 监听MathJax加载完成事件
+    if (window.MathJax) {
+      mathJaxReady();
+    } else {
+      // 如果MathJax尚未加载，添加全局监听
+      window.addEventListener('load', () => {
+        if (window.MathJax) {
+          mathJaxReady();
+        }
+      });
+    }
+  }
 });
+
+// 检查内容是否包含数学公式
+function containsMathFormulas(question) {
+  // 检查题目文本
+  if (question.text && (question.text.includes('$') || question.text.includes('\\(') || question.text.includes('\\['))) {
+    return true;
+  }
+
+  // 检查选项
+  if (question.options) {
+    for (const opt of question.options) {
+      const text = typeof opt === 'string' ? opt : opt.text;
+      if (text && (text.includes('$') || text.includes('\\(') || text.includes('\\['))) {
+        return true;
+      }
+    }
+  }
+
+  // 检查解析
+  if (question.explanation && (question.explanation.includes('$') || question.explanation.includes('\\(') || question.explanation.includes('\\['))) {
+    return true;
+  }
+
+  return false;
+}
+
+// 显示MathJax加载Toast
+function showMathJaxToast() {
+  const toast = document.getElementById('mathjax-toast');
+  if (toast) {
+    toast.style.display = 'flex';
+    // 使用setTimeout确保CSS过渡效果生效
+    setTimeout(() => {
+      toast.classList.remove('hidden');
+      toast.classList.add('show');
+    }, 10);
+  }
+}
+
+// 隐藏MathJax加载Toast
+function hideMathJaxToast() {
+  const toast = document.getElementById('mathjax-toast');
+  if (toast) {
+    toast.classList.remove('show');
+    toast.classList.add('hidden');
+    // 动画完成后隐藏元素
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 300);
+  }
+}
+
+// MathJax加载完成后的处理
+function mathJaxReady() {
+  // 设置MathJax已加载完成标志
+  isMathJaxLoaded = true;
+
+  if (typeof window.MathJax.typesetPromise === 'function') {
+    // 监听MathJax渲染完成
+    window.MathJax.typesetPromise().then(() => {
+      hideMathJaxToast();
+    }).catch(err => {
+      console.error('MathJax渲染错误:', err);
+      hideMathJaxToast();
+    });
+  } else if (typeof window.MathJax.typeset === 'function') {
+    // 使用传统typeset方法
+    window.MathJax.typeset();
+    hideMathJaxToast();
+  } else {
+    // MathJax不可用，直接隐藏提示
+    hideMathJaxToast();
+  }
+}
 
 
 function renderQuestion() {
@@ -101,13 +198,36 @@ function renderQuestion() {
 
   // 触发MathJax渲染题目和选项中的公式
   if (window.MathJax) {
-    if (typeof MathJax.typesetPromise === 'function') {
-      MathJax.typesetPromise([questionText, optionsList]).catch(err => {
-        console.error('MathJax渲染错误:', err);
-      });
-    } else if (typeof MathJax.typeset === 'function') {
-      // 回退到使用typeset方法
-      MathJax.typeset([questionText, optionsList]);
+    // 检测当前题目是否包含数学公式
+    if (containsMathFormulas(currentQ)) {
+      // 只有当MathJax未加载完成时，才显示Toast
+      if (!isMathJaxLoaded) {
+        showMathJaxToast();
+      }
+
+      if (typeof MathJax.typesetPromise === 'function') {
+        MathJax.typesetPromise([questionText, optionsList]).then(() => {
+          // 渲染完成后，设置MathJax已加载标志
+          isMathJaxLoaded = true;
+          // 隐藏Toast
+          hideMathJaxToast();
+        }).catch(err => {
+          console.error('MathJax渲染错误:', err);
+          // 即使出错，也设置已加载标志，避免重复提示
+          isMathJaxLoaded = true;
+          hideMathJaxToast();
+        });
+      } else if (typeof MathJax.typeset === 'function') {
+        // 回退到使用typeset方法
+        MathJax.typeset([questionText, optionsList]);
+        // 设置MathJax已加载标志
+        isMathJaxLoaded = true;
+        hideMathJaxToast();
+      } else {
+        // MathJax不可用，直接隐藏提示
+        isMathJaxLoaded = true;
+        hideMathJaxToast();
+      }
     }
   }
 
@@ -217,13 +337,40 @@ function submitAnswer() {
 
   // 触发MathJax渲染解析中的公式
   if (window.MathJax) {
-    if (typeof MathJax.typesetPromise === 'function') {
-      MathJax.typesetPromise([explanationText]).catch(err => {
-        console.error('MathJax渲染错误:', err);
-      });
-    } else if (typeof MathJax.typeset === 'function') {
-      // 回退到使用typeset方法
-      MathJax.typeset([explanationText]);
+    // 检测解析是否包含数学公式
+    const hasMathInExplanation = currentQ.explanation &&
+      (currentQ.explanation.includes('$') ||
+        currentQ.explanation.includes('\\(') ||
+        currentQ.explanation.includes('\\['));
+
+    if (hasMathInExplanation) {
+      // 只有当MathJax未加载完成时，才显示Toast
+      if (!isMathJaxLoaded) {
+        showMathJaxToast();
+      }
+
+      if (typeof MathJax.typesetPromise === 'function') {
+        MathJax.typesetPromise([explanationText]).then(() => {
+          // 渲染完成后，设置MathJax已加载标志
+          isMathJaxLoaded = true;
+          hideMathJaxToast();
+        }).catch(err => {
+          console.error('MathJax渲染错误:', err);
+          // 即使出错，也设置已加载标志，避免重复提示
+          isMathJaxLoaded = true;
+          hideMathJaxToast();
+        });
+      } else if (typeof MathJax.typeset === 'function') {
+        // 回退到使用typeset方法
+        MathJax.typeset([explanationText]);
+        // 设置MathJax已加载标志
+        isMathJaxLoaded = true;
+        hideMathJaxToast();
+      } else {
+        // MathJax不可用，直接隐藏提示
+        isMathJaxLoaded = true;
+        hideMathJaxToast();
+      }
     }
   }
 

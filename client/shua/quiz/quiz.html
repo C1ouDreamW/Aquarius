@@ -6,105 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ShuaShua - 答题中</title>
   <link rel="stylesheet" href="../style.css">
-  <style>
-    .mathjax-loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--card-bg);
-      backdrop-filter: blur(5px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-      transition: opacity var(--change-speed) ease, visibility var(--change-speed) ease;
-    }
-
-    .mathjax-loading-content {
-      text-align: center;
-      padding: 40px 30px;
-      border-radius: 12px;
-      background: var(--card-hover-bg);
-      box-shadow: 0 10px 40px var(--shadow-color);
-      min-width: 300px;
-      border: 1px solid var(--card-border);
-      animation: fadeIn 0.5s ease;
-    }
-
-    /* 增强版Loading动画 */
-    .loader {
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top: 4px solid #3b82f6;
-      border-left: 4px solid #8b5cf6;
-      width: 48px;
-      height: 48px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 24px;
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* 淡入动画 */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .loading-text {
-      margin-top: 0;
-      font-size: 1.2rem;
-      color: var(--text-main);
-      font-weight: 600;
-      line-height: 1.5;
-    }
-
-    .loading-subtext {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      margin-top: 8px;
-      font-weight: 400;
-    }
-
-    /* 隐藏加载提示的类 */
-    .mathjax-loading-overlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-  </style>
-
-
 </head>
 
 <body>
-  <div id="mathjax-loading" class="mathjax-loading-overlay">
-    <div class="mathjax-loading-content">
-      <div class="loader"></div>
-      <p class="loading-text">页面正在加载中</p>
-      <p class="loading-subtext">⏳加载页面渲染必要组件中，请稍候...</p>
+  <!-- Toast提示 -->
+  <div id="mathjax-toast" class="mathjax-toast" style="display: none;">
+    <div class="mathjax-toast-content">
+      <span class="mathjax-toast-icon">⏳</span>
+      <span class="mathjax-toast-text">正在加载公式...</span>
     </div>
   </div>
 
-  <!-- 配置MathJax - 放在加载提示之后 -->
+  <!-- 配置MathJax -->
   <script>
     window.MathJax = {
       tex: {
@@ -116,22 +29,11 @@
         fontCache: 'global'
       },
       startup: {
-        // 保持默认的typeset: true，确保MathJax会自动渲染
         ready: function () {
           // MathJax加载完成后的回调
           const MathJax = window.MathJax;
           // 调用默认的ready函数
           MathJax.startup.defaultReady();
-
-          // 监听渲染完成事件
-          MathJax.typesetPromise().then(() => {
-            // 渲染完成后隐藏加载提示
-            const loadingOverlay = document.getElementById('mathjax-loading');
-            if (loadingOverlay) {
-              loadingOverlay.classList.add('hidden');
-              console.log('MathJax渲染完成');
-            }
-          });
         }
       }
     };
